@@ -4,11 +4,11 @@
   "description": "",
   "engines": {
     "node": "8.9.4",
-    "npm": "2.14.2"
+    "npm": "6.1.0"
   },
   "scripts": {
     "console": "node console.js",
-    "cover": "NODE_ENV=testing istanbul cover ./node_modules/mocha/bin/_mocha --compilers js:babel-core/register test/app.js",
+    "cover": "NODE_ENV=testing istanbul cover ./node_modules/mocha/bin/_mocha js:babel-core/register test/app.js",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "lint": "./node_modules/eslint/bin/eslint.js \"**/*.js\"",
@@ -20,8 +20,8 @@
     "prestart": "npm run lint",
     "migrations": "./node_modules/.bin/sequelize db:migrate",
     "start": "./node_modules/.bin/nodemon --inspect app.js",
-    "test": "NODE_ENV=testing ./node_modules/mocha/bin/_mocha --timeout 6000 --exit --compilers js:babel-core/register test/app.js && npm run nsp",
-    "test-inspect": "NODE_ENV=testing node --inspect --debug-brk ./node_modules/mocha/bin/_mocha --compilers js:babel-core/register test/app.js"
+    "test": "NODE_ENV=testing ./node_modules/mocha/bin/_mocha --timeout 6000 --exit js:babel-core/register test/app.js",
+    "test-inspect": "NODE_ENV=testing node --inspect --debug-brk ./node_modules/mocha/bin/_mocha js:babel-core/register test/app.js"
   },
   "cacheDirectories": [
     "node_modules"
