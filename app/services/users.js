@@ -1,7 +1,6 @@
 'use strict';
 
-const sequelize = require('sequelize'),
-  User = require('../models').user,
+const User = require('../models').user,
   errors = require('../errors');
 
 exports.create = values =>
