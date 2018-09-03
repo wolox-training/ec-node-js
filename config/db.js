@@ -17,7 +17,7 @@ module.exports = {
     host: config.host,
     operatorsAliases: config.operatorsAliases,
     dialect: 'postgres',
-    logging: console.log // eslint-disable-line no-console
+    logging: false
   },
   production: {
     username: config.username,

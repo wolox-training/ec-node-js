@@ -9,23 +9,15 @@ const fs = require('fs'),
 
 chai.use(chaiHttp);
 
-const getTablesQuery = `SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';`;
+const truncateTable = model =>
+  model.destroy({ truncate: true, cascade: true, force: true, restartIdentity: true });
 
-// THIS WORKS ONLY WITH POSTGRESQL
+const truncateDatabase = () => Promise.all(Object.values(models.sequelize.models).map(truncateTable));
+
 beforeEach('drop tables, re-create them and populate sample data', done => {
-  models.sequelize.query(getTablesQuery).then(tables => {
-    const tableExpression = tables
-      .map(table => {
-        return `"public"."${table[0]}"`;
-      })
-      .join(', ');
-    return models.sequelize
-      .query(`TRUNCATE TABLE ${tableExpression} RESTART IDENTITY`)
-      .then(() => {
-        return dataCreation.execute();
-      })
-      .then(() => done());
-  });
+  truncateDatabase()
+    .then(() => dataCreation.execute())
+    .then(() => done());
 });
 
 // including all test files

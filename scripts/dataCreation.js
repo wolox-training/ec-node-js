@@ -1,3 +1,16 @@
+const bcrypt = require('bcryptjs'),
+  User = require('../app/models').user;
+
 exports.execute = () => {
-  // This function should create data for testing and return a promise
+  return bcrypt.hash('password1234', 10).then(hash => {
+    const data = [];
+    data.push(
+      User.create({
+        firstName: 'Joe',
+        lastName: 'Doe',
+        email: 'joe.doe@wolox.com.ar',
+        password: hash
+      })
+    );
+  });
 };
