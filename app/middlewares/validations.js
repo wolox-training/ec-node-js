@@ -5,7 +5,7 @@ const validateBody = schema => (req, res, next) => {
   Joi.validate(req.body, schema, { abortEarly: false }) // return all errors a payload contains, not just the first one Joi finds
     .then(() => next())
     .catch(err => {
-      next(errors.invalidRequestError(err.details));
+      next(errors.requestError(err.details));
     });
 };
 
