@@ -23,10 +23,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
-      paranoid: true,
-      defaultScope: {
-        attributes: { exclude: ['password'] }
-      }
+      paranoid: true
     }
   );
   User.associate = function(models) {
