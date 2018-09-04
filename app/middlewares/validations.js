@@ -9,21 +9,33 @@ const validateBody = schema => (req, res, next) => {
     });
 };
 
+const emailValidation = Joi.string()
+  .email()
+  .regex(/@wolox\.(co|com|cl|com.ar)$/, { name: 'Wolox e-mail' })
+  .required();
+
+const passValidation = Joi.string()
+  .regex(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/, { name: 'Alphanumeric' })
+  .min(8)
+  .required();
+
 const userValidator = validateBody(
   Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
-    email: Joi.string()
-      .email()
-      .regex(/@wolox\.(co|com|cl|com.ar)$/, { name: 'Wolox e-mail' })
-      .required(),
-    password: Joi.string()
-      .regex(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/, { name: 'Alphanumeric' })
-      .min(8)
-      .required()
+    email: emailValidation,
+    password: passValidation
+  })
+);
+
+const signinValidator = validateBody(
+  Joi.object({
+    email: emailValidation,
+    password: passValidation
   })
 );
 
 module.exports = {
-  userValidator
+  userValidator,
+  signinValidator
 };
