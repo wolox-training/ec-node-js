@@ -7,6 +7,7 @@ const statusCodes = {
   [errors.DATABASE_ERROR]: 503,
   [errors.DEFAULT_ERROR]: 500,
   [errors.USER_ALREADY_EXIST]: 409,
+  [errors.INVALID_USER_ERROR]: 400,
   [errors.REQUEST_ERROR]: 400
 };
 
