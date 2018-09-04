@@ -1,5 +1,6 @@
 const chai = require('chai'),
   dictum = require('dictum.js'),
+  sessionManager = require('../app/services/sessionManager'),
   server = require('./../app'),
   should = chai.should();
 
@@ -128,6 +129,91 @@ describe('users', () => {
         })
         .then(res => {
           res.should.have.status(409);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+        })
+        .then(() => done());
+    });
+  });
+  describe('/users/sessions POST', () => {
+    it('should be successful', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: 'password1234',
+          email: 'joe.doe@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(200);
+          res.should.be.json;
+          res.headers.should.have.property(sessionManager.HEADER_NAME);
+          sessionManager
+            .decode(res.headers[sessionManager.HEADER_NAME])
+            .should.be.equal('joe.doe@wolox.com.ar');
+          dictum.chai(res);
+        })
+        .then(() => done());
+    });
+    it('should fail because mail is invalid', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: 'password1234',
+          email: 'joe.doe@other.com'
+        })
+        .then(res => {
+          res.should.have.status(400);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+        })
+        .then(() => done());
+    });
+    it('should fail because password is invalid', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: 'short12',
+          email: 'joe.doe@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(400);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+        })
+        .then(() => done());
+    });
+    it('should fail because email does not exist', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: 'password1234',
+          email: 'not.exist@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(400);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+        })
+        .then(() => done());
+    });
+    it('should fail because email or password are incorrect', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: '123notcorrect',
+          email: 'joe.doe@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(400);
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
