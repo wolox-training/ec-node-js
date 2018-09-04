@@ -4,6 +4,13 @@ const chai = require('chai'),
   server = require('./../app'),
   should = chai.should();
 
+const authenticate = email => {
+  return chai
+    .request(server)
+    .post('/users/sessions')
+    .send({ email, password: 'password1234' });
+};
+
 describe('users', () => {
   describe('/users POST', () => {
     it('should be successful', done => {
@@ -17,7 +24,7 @@ describe('users', () => {
           email: 'user@wolox.com.ar'
         })
         .then(res => {
-          res.should.have.status(200);
+          res.should.have.status(201);
           res.should.be.json;
           res.body.should.have.property('firstName');
           res.body.should.have.property('lastName');
@@ -243,6 +250,98 @@ describe('users', () => {
           res.body.should.have.property('internal_code');
 
           res.body.message.should.be.equal('Email or password are incorrect!');
+        })
+        .then(() => done());
+    });
+  });
+  describe('/admin/users POST', () => {
+    it('should be successful with existing user request and using authenticated admin user', done => {
+      authenticate('admin.user@wolox.com.ar').then(({ headers }) => {
+        chai
+          .request(server)
+          .post('/admin/users')
+          .set(sessionManager.HEADER_NAME, headers[sessionManager.HEADER_NAME])
+          .send({
+            firstName: 'Joe',
+            lastName: 'Doe',
+            password: 'password1234',
+            email: 'joe.doe@wolox.com.ar'
+          })
+          .then(res => {
+            res.should.have.status(200);
+            dictum.chai(res);
+          })
+          .then(() => done());
+      });
+    });
+    it('should be successful with non-existing user request and using authenticated admin user', done => {
+      authenticate('admin.user@wolox.com.ar').then(({ headers }) => {
+        chai
+          .request(server)
+          .post('/admin/users')
+          .set(sessionManager.HEADER_NAME, headers[sessionManager.HEADER_NAME])
+          .send({
+            firstName: 'Anna',
+            lastName: 'Rose',
+            password: 'password1234',
+            email: 'anna.rose@wolox.com.ar'
+          })
+          .then(res => {
+            res.should.have.status(201);
+            dictum.chai(res);
+          })
+          .then(() => done());
+      });
+    });
+    it('should fail using authenticated normal user', done => {
+      authenticate('joe.doe@wolox.com.ar').then(({ headers }) => {
+        chai
+          .request(server)
+          .post('/admin/users')
+          .set(sessionManager.HEADER_NAME, headers[sessionManager.HEADER_NAME])
+          .send({
+            firstName: 'Anna',
+            lastName: 'Rose',
+            password: 'password1234',
+            email: 'anna.rose@wolox.com.ar'
+          })
+          .then(res => {
+            res.should.have.status(403);
+            dictum.chai(res);
+          })
+          .then(() => done());
+      });
+    });
+    it('should fail non-authenticated request', done => {
+      chai
+        .request(server)
+        .post('/admin/users')
+        .send({
+          firstName: 'Anna',
+          lastName: 'Rose',
+          password: 'password1234',
+          email: 'anna.rose@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(401);
+          dictum.chai(res);
+        })
+        .then(() => done());
+    });
+    it('should fail using a invalid token', done => {
+      chai
+        .request(server)
+        .post('/admin/users')
+        .set(sessionManager.HEADER_NAME, 'non-valid-hash')
+        .send({
+          firstName: 'Anna',
+          lastName: 'Rose',
+          password: 'password1234',
+          email: 'anna.rose@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(401);
+          dictum.chai(res);
         })
         .then(() => done());
     });
