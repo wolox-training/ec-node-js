@@ -24,7 +24,7 @@ const create = (req, res, next) => {
       } else {
         encryptAndCreateUser(user).then(created => {
           logger.info(`User #${created.id} with e-mail ${created.email} created succesfully!`);
-          res.status(200).send(created);
+          res.status(201).send(created);
         });
       }
     })
@@ -54,7 +54,27 @@ const signin = (req, res, next) => {
     .catch(next);
 };
 
+const createAdmin = (req, res, next) => {
+  const user = req.body;
+  encryptUserPassword(user).then(hashedUser => {
+    hashedUser.isAdmin = true;
+    userService
+      .update(hashedUser)
+      .then(created => {
+        if (created) {
+          logger.info(`Admin with e-mail ${hashedUser.email} created succesfully!`);
+          res.status(201).end();
+        } else {
+          logger.info(`Admin with e-mail ${hashedUser.email} updated succesfully!`);
+          res.status(200).end();
+        }
+      })
+      .catch(next);
+  });
+};
+
 module.exports = {
   create,
+  createAdmin,
   signin
 };
