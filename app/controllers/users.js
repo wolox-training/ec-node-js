@@ -59,7 +59,7 @@ const createAdmin = (req, res, next) => {
   encryptUserPassword(user).then(hashedUser => {
     hashedUser.isAdmin = true;
     userService
-      .update(hashedUser)
+      .updateOrCreate(hashedUser)
       .then(created => {
         if (created) {
           logger.info(`Admin with e-mail ${hashedUser.email} created succesfully!`);
