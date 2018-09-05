@@ -14,10 +14,10 @@
   "id": 3,
   "firstName": "firstName",
   "lastName": "lastName",
-  "password": "$2a$10$G/eHIOElvAGH4ad4wxiJVechI8D0jmBqiPFOzQibAXACzu1KKqu5i",
+  "password": "$2a$10$fe/nXoFSSToJ4yaMEE5E0uj9cVue/YAGI6edCLaCdbfXC7Xmf.Gqa",
   "email": "user@wolox.com.ar",
-  "updatedAt": "2018-09-10T16:51:20.904Z",
-  "createdAt": "2018-09-10T16:51:20.904Z",
+  "updatedAt": "2018-09-10T17:36:43.271Z",
+  "createdAt": "2018-09-10T17:36:43.271Z",
   "deletedAt": null
 }</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-sessions-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-sessions-POST" href="#collapse-users-sessions-POST">POST /users/sessions</a></h4></div><div id="collapse-users-sessions-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-sessions-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
   "content-type": "application/json",
@@ -30,4 +30,25 @@
   "content-length": 58
 }</pre><h5>Body</h5><pre>{
   "msg": "User joe.doe@wolox.com.ar signed in correctly!"
+}</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-GET"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-GET" href="#collapse-users-GET">GET /users?limit=5&page=0</a></h4></div><div id="collapse-users-GET" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-GET"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+  "authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.ImpvZS5kb2VAd29sb3guY29tLmFyIg.YSnbep180inZKfPLmBEJHVD_hYvE6iPBSIBpONqcYro"
+}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
+  "authorization": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.ImpvZS5kb2VAd29sb3guY29tLmFyIg.YSnbep180inZKfPLmBEJHVD_hYvE6iPBSIBpONqcYro"
+}</pre><h5>Body</h5><pre>{
+  "page": "0",
+  "count": 2,
+  "rows": [
+    {
+      "firstName": "Joe",
+      "lastName": "Doe",
+      "email": "joe.doe@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Admin",
+      "lastName": "User",
+      "email": "admin.user@wolox.com.ar",
+      "isAdmin": true
+    }
+  ]
 }</pre></div></div></div></div></div></body></html>

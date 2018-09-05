@@ -358,5 +358,62 @@ describe('users', () => {
         })
         .then(() => done());
     });
+    describe('/users GET', () => {
+      it('should be successful', done => {
+        const hash = authenticate('joe.doe@wolox.com.ar');
+        chai
+          .request(server)
+          .get('/users')
+          .query({ limit: 5, page: 0 })
+          .set(sessionManager.HEADER_NAME, hash)
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.have.property('page');
+            res.body.should.have.property('count');
+            res.body.should.have.property('rows');
+            dictum.chai(res);
+          })
+          .then(() => done());
+      });
+    });
+    describe('/users GET', () => {
+      it('should fail because limit is not a number', done => {
+        const hash = authenticate('joe.doe@wolox.com.ar');
+        chai
+          .request(server)
+          .get('/users')
+          .query({ limit: 'string', page: 0 })
+          .set(sessionManager.HEADER_NAME, hash)
+          .then(res => {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+
+            res.body.message[0].message.should.be.equal('"limit" must be a number');
+          })
+          .then(() => done());
+      });
+    });
+  });
+  describe('/users GET', () => {
+    it('should fail because page is not a number', done => {
+      const hash = authenticate('joe.doe@wolox.com.ar');
+      chai
+        .request(server)
+        .get('/users')
+        .set(sessionManager.HEADER_NAME, hash)
+        .query({ limit: 5, page: 'string' })
+        .then(res => {
+          res.should.have.status(400);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message[0].message.should.be.equal('"page" must be a number');
+        })
+        .then(() => done());
+    });
   });
 });
