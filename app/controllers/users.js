@@ -73,7 +73,17 @@ const signin = (req, res, next) => {
     .catch(next);
 };
 
+const getUsers = (req, res, next) => {
+  const { limit, page } = req.query;
+
+  return userService
+    .getAll({ limit, page })
+    .then(data => res.status(200).send(data))
+    .catch(next);
+};
+
 module.exports = {
+  getUsers,
   create,
   createAdmin,
   signin
