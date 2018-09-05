@@ -1,7 +1,6 @@
 const sessionManager = require('../services/sessionManager'),
   usersService = require('../services/users'),
-  errors = require('../errors'),
-  logger = require('../logger');
+  errors = require('../errors');
 
 exports.authenticate = (req, res, next) => {
   const hash = req.headers[sessionManager.HEADER_NAME];

@@ -1,8 +1,8 @@
 const Joi = require('joi'),
   errors = require('../errors');
 
-const validateBody = schema => (req, res, next) => {
-  Joi.validate(req.body, schema, { abortEarly: false }) // return all errors a payload contains, not just the first one Joi finds
+const validate = (attr, schema) => (req, res, next) => {
+  Joi.validate(req[attr], schema, { abortEarly: false }) // return all errors a payload contains, not just the first one Joi finds
     .then(() => next())
     .catch(err => {
       next(errors.requestError(err.details));
@@ -19,7 +19,8 @@ const passValidation = Joi.string()
   .min(8)
   .required();
 
-const userValidator = validateBody(
+const userValidator = validate(
+  'body',
   Joi.object({
     firstName: Joi.string().required(),
     lastName: Joi.string().required(),
@@ -28,14 +29,24 @@ const userValidator = validateBody(
   })
 );
 
-const signinValidator = validateBody(
+const signinValidator = validate(
+  'body',
   Joi.object({
     email: emailValidation,
     password: passValidation
   })
 );
 
+const paginateValidator = validate(
+  'query',
+  Joi.object({
+    limit: Joi.number().integer(),
+    page: Joi.number().integer()
+  })
+);
+
 module.exports = {
   userValidator,
-  signinValidator
+  signinValidator,
+  paginateValidator
 };
