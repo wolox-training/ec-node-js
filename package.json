@@ -38,12 +38,14 @@
     "url": "https://github.com/Wolox/training-node/issues"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "joi": "^13.6.0",
     "jwt-simple": "^0.5.1",
     "morgan": "^1.9.0",
+    "nock": "^9.6.1",
     "pg": "^7.4.1",
     "pg-native": "^2.2.0",
     "rollbar": "^2.3.9",
