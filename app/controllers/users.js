@@ -3,17 +3,17 @@
 const bcrypt = require('bcryptjs'),
   logger = require('../logger'),
   userService = require('../services/users'),
+  sessionManager = require('../services/sessionManager'),
   errors = require('../errors');
 
+const SALT_ROUND = 10;
+
 const encryptUserPassword = user =>
-  bcrypt.hash(user.password, 10).then(hash => {
-    user.password = hash;
-    return user;
-  });
+  bcrypt.hash(user.password, SALT_ROUND).then(password => Object.assign(user, { password }));
 
 const encryptAndCreateUser = user => encryptUserPassword(user).then(userService.create);
 
-exports.create = (req, res, next) => {
+const create = (req, res, next) => {
   const user = req.body;
 
   userService
@@ -29,4 +29,32 @@ exports.create = (req, res, next) => {
       }
     })
     .catch(next);
+};
+
+const signin = (req, res, next) => {
+  const { email, password } = req.body;
+
+  userService
+    .find({ email })
+    .then(userFound => {
+      if (userFound) {
+        bcrypt.compare(password, userFound.password).then(valid => {
+          if (valid) {
+            logger.info(`User ${userFound.email} signed in`);
+            res.set(sessionManager.HEADER_NAME, sessionManager.encode(userFound.email));
+            res.status(200).send({ msg: `User ${userFound.email} signed in correctly!` });
+          } else {
+            next(errors.invalidUserError(`Email or password are incorrect!`));
+          }
+        });
+      } else {
+        next(errors.invalidUserError(`Cannot find user ${email}!`));
+      }
+    })
+    .catch(next);
+};
+
+module.exports = {
+  create,
+  signin
 };

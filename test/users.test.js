@@ -1,5 +1,6 @@
 const chai = require('chai'),
   dictum = require('dictum.js'),
+  sessionManager = require('../app/services/sessionManager'),
   server = require('./../app'),
   should = chai.should();
 
@@ -41,6 +42,8 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message[0].message.should.be.equal('"password" is required');
         })
         .then(() => done());
     });
@@ -59,6 +62,8 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message[0].message.should.be.equal('"email" must be a valid email');
         })
         .then(() => done());
     });
@@ -77,6 +82,10 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message[0].message.should.be.equal(
+            '"email" with value "email@other.com.ar" fails to match the Wolox e-mail pattern'
+          );
         })
         .then(() => done());
     });
@@ -95,6 +104,10 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message[0].message.should.be.equal(
+            '"password" with value "password" fails to match the Alphanumeric pattern'
+          );
         })
         .then(() => done());
     });
@@ -113,6 +126,8 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message[0].message.should.be.equal('"password" length must be at least 8 characters long');
         })
         .then(() => done());
     });
@@ -131,6 +146,103 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal("E-mail 'joe.doe@wolox.com.ar' already registered");
+        })
+        .then(() => done());
+    });
+  });
+  describe('/users/sessions POST', () => {
+    it('should be successful', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: 'password1234',
+          email: 'joe.doe@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(200);
+          res.should.be.json;
+          res.headers.should.have.property(sessionManager.HEADER_NAME);
+          sessionManager
+            .decode(res.headers[sessionManager.HEADER_NAME])
+            .should.be.equal('joe.doe@wolox.com.ar');
+          dictum.chai(res);
+        })
+        .then(() => done());
+    });
+    it('should fail because mail is not valid', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: 'password1234',
+          email: 'email@other.com'
+        })
+        .then(res => {
+          res.should.have.status(400);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message[0].message.should.be.equal(
+            '"email" with value "email@other.com" fails to match the Wolox e-mail pattern'
+          );
+        })
+        .then(() => done());
+    });
+    it('should fail because password is invalid', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: 'short12',
+          email: 'joe.doe@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(400);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message[0].message.should.be.equal('"password" length must be at least 8 characters long');
+        })
+        .then(() => done());
+    });
+    it('should fail because email does not exist', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: 'password1234',
+          email: 'not.exist@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(400);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('Cannot find user not.exist@wolox.com.ar!');
+        })
+        .then(() => done());
+    });
+    it('should fail because email or password are incorrect', done => {
+      chai
+        .request(server)
+        .post('/users/sessions')
+        .send({
+          password: '123notcorrect',
+          email: 'joe.doe@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(400);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('Email or password are incorrect!');
         })
         .then(() => done());
     });
