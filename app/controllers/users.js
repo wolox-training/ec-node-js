@@ -31,6 +31,25 @@ const create = (req, res, next) => {
     .catch(next);
 };
 
+const createAdmin = (req, res, next) => {
+  const user = req.body;
+  encryptUserPassword(user).then(hashedUser => {
+    hashedUser.isAdmin = true;
+    userService
+      .updateOrCreate(hashedUser)
+      .then(created => {
+        if (created) {
+          logger.info(`Admin with e-mail ${hashedUser.email} created succesfully!`);
+          res.status(201).send(hashedUser);
+        } else {
+          logger.info(`User with e-mail ${hashedUser.email} is now admin!`);
+          res.status(200).send(hashedUser);
+        }
+      })
+      .catch(next);
+  });
+};
+
 const signin = (req, res, next) => {
   const { email, password } = req.body;
 
@@ -52,25 +71,6 @@ const signin = (req, res, next) => {
       }
     })
     .catch(next);
-};
-
-const createAdmin = (req, res, next) => {
-  const user = req.body;
-  encryptUserPassword(user).then(hashedUser => {
-    hashedUser.isAdmin = true;
-    userService
-      .updateOrCreate(hashedUser)
-      .then(created => {
-        if (created) {
-          logger.info(`Admin with e-mail ${hashedUser.email} created succesfully!`);
-          res.status(201).end();
-        } else {
-          logger.info(`Admin with e-mail ${hashedUser.email} updated succesfully!`);
-          res.status(200).end();
-        }
-      })
-      .catch(next);
-  });
 };
 
 module.exports = {

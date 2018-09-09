@@ -5,5 +5,9 @@ const usersController = require('./controllers/users'),
 exports.init = app => {
   app.post('/users', [validations.userValidator], usersController.create);
   app.post('/users/sessions', [validations.signinValidator], usersController.signin);
-  app.post('/admin/users', [validations.userValidator], usersController.createAdmin);
+  app.post(
+    '/admin/users',
+    [auth.authenticate, auth.isAdmin, validations.userValidator],
+    usersController.createAdmin
+  );
 };
