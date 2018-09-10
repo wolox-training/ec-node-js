@@ -24,11 +24,30 @@ const create = (req, res, next) => {
       } else {
         encryptAndCreateUser(user).then(created => {
           logger.info(`User #${created.id} with e-mail ${created.email} created succesfully!`);
-          res.status(200).send(created);
+          res.status(201).send(created);
         });
       }
     })
     .catch(next);
+};
+
+const createAdmin = (req, res, next) => {
+  const user = req.body;
+  encryptUserPassword(user).then(hashedUser => {
+    hashedUser.isAdmin = true;
+    userService
+      .updateOrCreate(hashedUser)
+      .then(created => {
+        if (created) {
+          logger.info(`Admin with e-mail ${hashedUser.email} created succesfully!`);
+          res.status(201).send(hashedUser);
+        } else {
+          logger.info(`User with e-mail ${hashedUser.email} is now admin!`);
+          res.status(200).send(hashedUser);
+        }
+      })
+      .catch(next);
+  });
 };
 
 const signin = (req, res, next) => {
@@ -56,5 +75,6 @@ const signin = (req, res, next) => {
 
 module.exports = {
   create,
+  createAdmin,
   signin
 };

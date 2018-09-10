@@ -14,6 +14,15 @@ exports.execute = () => {
           password: hash
         })
       );
+      data.push(
+        User.create({
+          firstName: 'Admin',
+          lastName: 'User',
+          email: 'admin.user@wolox.com.ar',
+          isAdmin: true,
+          password: hash
+        })
+      );
       return Promise.all(data);
     })
     .catch(bcryptErr => {
