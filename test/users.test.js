@@ -312,6 +312,8 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('User joe.doe@wolox.com.ar is not Admin'); // TODO
         })
         .then(() => done());
     });
@@ -330,6 +332,8 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('No authorization provided'); // TODO
         })
         .then(() => done());
     });
@@ -349,6 +353,8 @@ describe('users', () => {
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('Error verifying hash'); // TODO
         })
         .then(() => done());
     });
