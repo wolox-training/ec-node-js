@@ -3,6 +3,7 @@ const chai = require('chai'),
   sessionManager = require('../app/services/sessionManager'),
   userService = require('../app/services/users'),
   server = require('./../app'),
+  usersHelper = require('./helper/users'),
   should = chai.should();
 
 const authenticate = email => sessionManager.encode(email);
@@ -170,9 +171,8 @@ describe('users', () => {
           res.should.have.status(200);
           res.should.be.json;
           res.headers.should.have.property(sessionManager.HEADER_NAME);
-          sessionManager
-            .decode(res.headers[sessionManager.HEADER_NAME])
-            .should.be.equal('joe.doe@wolox.com.ar');
+          const { data } = sessionManager.decode(res.headers[sessionManager.HEADER_NAME]);
+          data.should.be.equal('joe.doe@wolox.com.ar');
           dictum.chai(res);
         })
         .then(() => done());
@@ -254,11 +254,11 @@ describe('users', () => {
   });
   describe('/admin/users POST', () => {
     it('should be successful with existing user request and using authenticated admin user', done => {
-      const hash = authenticate('admin.user@wolox.com.ar');
+      const authorization = usersHelper.adminUser();
       chai
         .request(server)
         .post('/admin/users')
-        .set(sessionManager.HEADER_NAME, hash)
+        .set(sessionManager.HEADER_NAME, authorization)
         .send({
           firstName: 'Joe',
           lastName: 'Doe',
@@ -277,11 +277,11 @@ describe('users', () => {
         .then(() => done());
     });
     it('should be successful with non-existing user request and using authenticated admin user', done => {
-      const hash = authenticate('admin.user@wolox.com.ar');
+      const authorization = usersHelper.adminUser();
       chai
         .request(server)
         .post('/admin/users')
-        .set(sessionManager.HEADER_NAME, hash)
+        .set(sessionManager.HEADER_NAME, authorization)
         .send({
           firstName: 'Anna',
           lastName: 'Rose',
@@ -299,11 +299,11 @@ describe('users', () => {
         .then(() => done());
     });
     it('should fail using authenticated normal user', done => {
-      const hash = authenticate('joe.doe@wolox.com.ar');
+      const authorization = usersHelper.defaultUser();
       chai
         .request(server)
         .post('/admin/users')
-        .set(sessionManager.HEADER_NAME, hash)
+        .set(sessionManager.HEADER_NAME, authorization)
         .send({
           firstName: 'Anna',
           lastName: 'Rose',
@@ -336,11 +336,11 @@ describe('users', () => {
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
 
-          res.body.message.should.be.equal('No authorization provided'); // TODO
+          res.body.message.should.be.equal('No authorization provided');
         })
         .then(() => done());
     });
-    it('should fail using a invalid token', done => {
+    it('should fail using an invalid token', done => {
       chai
         .request(server)
         .post('/admin/users')
@@ -357,7 +357,71 @@ describe('users', () => {
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
 
-          res.body.message.should.be.equal('Error verifying hash'); // TODO
+          res.body.message.should.be.equal('jwt malformed');
+        })
+        .then(() => done());
+    });
+    it('ONLY should fail using an expired token', done => {
+      const authorization = usersHelper.expiredUser();
+      chai
+        .request(server)
+        .post('/admin/users')
+        .set(sessionManager.HEADER_NAME, authorization)
+        .send({
+          firstName: 'Anna',
+          lastName: 'Rose',
+          password: 'password1234',
+          email: 'anna.rose@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(401);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('jwt expired');
+        })
+        .then(() => done());
+    });
+  });
+  describe('/users/invalidate_all POST', () => {
+    it('succesful case should return a meaningfull message', done => {
+      const authorization = usersHelper.adminUser();
+      chai
+        .request(server)
+        .post('/users/invalidate_all')
+        .set(sessionManager.HEADER_NAME, authorization)
+        .send()
+        .then(res => {
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.message.should.be.equal('All tokens were invalidated');
+          dictum.chai(res);
+        })
+        .then(() => done());
+    });
+    it('succesful case should invalidate previous not-expired tokens', done => {
+      const authorization = usersHelper.adminUser();
+      chai
+        .request(server)
+        .post('/users/invalidate_all')
+        .set(sessionManager.HEADER_NAME, authorization)
+        .send()
+        .then(() => {
+          chai
+            .request(server)
+            .post('/users/invalidate_all')
+            .set(sessionManager.HEADER_NAME, authorization)
+            .send()
+            .then(res => {
+              res.should.have.status(401);
+              res.should.be.json;
+              res.body.should.have.property('message');
+              res.body.should.have.property('internal_code');
+
+              res.body.message.should.be.equal('invalid signature');
+            });
         })
         .then(() => done());
     });
