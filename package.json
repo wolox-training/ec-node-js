@@ -43,6 +43,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "joi": "^13.6.0",
+    "jsonwebtoken": "^8.3.0",
     "jwt-simple": "^0.5.1",
     "morgan": "^1.9.0",
     "nock": "^9.6.1",
