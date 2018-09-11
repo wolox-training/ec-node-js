@@ -1,12 +1,13 @@
 'use strict';
 
-const jwt = require('jwt-simple'),
-  config = require('./../../config');
+const jwt = require('jsonwebtoken'),
+  secretGenerator = require('./secretGenerator'),
+  jwtConfig = require('./../../config').common.session;
 
-const SECRET = config.common.session.secret;
+const secret = () => secretGenerator.getGlobalSecret();
 
-exports.HEADER_NAME = config.common.session.header_name;
+exports.HEADER_NAME = jwtConfig.headerName;
 
-exports.encode = payload => jwt.encode(payload, SECRET);
+exports.encode = (data, expiresIn = jwtConfig.expirationTime) => jwt.sign({ data }, secret(), { expiresIn });
 
-exports.decode = token => jwt.decode(token, SECRET);
+exports.decode = token => jwt.verify(token, secret());

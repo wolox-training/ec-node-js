@@ -4,7 +4,9 @@ const bcrypt = require('bcryptjs'),
   logger = require('../logger'),
   userService = require('../services/users'),
   sessionManager = require('../services/sessionManager'),
-  errors = require('../errors');
+  secretGenerator = require('../services/secretGenerator'),
+  errors = require('../errors'),
+  config = require('../../config').common.session;
 
 const SALT_ROUND = 10;
 
@@ -59,9 +61,13 @@ const signin = (req, res, next) => {
       if (userFound) {
         bcrypt.compare(password, userFound.password).then(valid => {
           if (valid) {
+            const payload = sessionManager.encode(userFound.email);
+            res.set(sessionManager.HEADER_NAME, payload);
             logger.info(`User ${userFound.email} signed in`);
-            res.set(sessionManager.HEADER_NAME, sessionManager.encode(userFound.email));
-            res.status(200).send({ msg: `User ${userFound.email} signed in correctly!` });
+            res.status(200).send({
+              msg: `User ${userFound.email} signed in correctly!`,
+              expirationTime: config.expirationTime
+            });
           } else {
             next(errors.invalidUserError(`Email or password are incorrect!`));
           }
@@ -82,9 +88,15 @@ const getUsers = (req, res, next) => {
     .catch(next);
 };
 
+const invalidateAllTokens = (req, res, next) => {
+  secretGenerator.setGlobalSecret();
+  res.status(200).send({ message: 'All tokens were invalidated' });
+};
+
 module.exports = {
   getUsers,
   create,
   createAdmin,
-  signin
+  signin,
+  invalidateAllTokens
 };

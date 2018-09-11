@@ -6,7 +6,7 @@ exports.authenticate = (req, res, next) => {
   const hash = req.headers[sessionManager.HEADER_NAME];
   if (hash) {
     try {
-      const email = sessionManager.decode(hash);
+      const email = sessionManager.decode(hash).data;
       usersService.find({ email }).then(found => {
         if (found) {
           req.user = found;
@@ -14,7 +14,7 @@ exports.authenticate = (req, res, next) => {
         }
       });
     } catch (error) {
-      next(errors.unauthorizedUserError('Error verifying hash'));
+      next(errors.unauthorizedUserError(error.message));
     }
   } else {
     next(errors.unauthorizedUserError('No authorization provided'));
