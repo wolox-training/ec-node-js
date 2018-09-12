@@ -29,3 +29,8 @@ exports.getAll = ({ limit = 5, page = 0 }) =>
     .catch(err => {
       throw errors.databaseError(err.message);
     });
+
+exports.count = () =>
+  User.count().catch(err => {
+    throw errors.databaseError(err.message);
+  });
