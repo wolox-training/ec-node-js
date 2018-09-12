@@ -376,8 +376,42 @@ describe('users', () => {
           })
           .then(() => done());
       });
-    });
-    describe('/users GET', () => {
+      it('should return as many rows per page as the established limit', done => {
+        const hash = authenticate('joe.doe@wolox.com.ar');
+        chai
+          .request(server)
+          .get('/users')
+          .query({ limit: 2, page: 0 })
+          .set(sessionManager.HEADER_NAME, hash)
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.have.property('page');
+            res.body.should.have.property('count');
+            res.body.should.have.property('rows');
+
+            res.body.rows.length.should.be.equal(2);
+          })
+          .then(() => done());
+      });
+      it('should return the rows corrponding to established page', done => {
+        const hash = authenticate('joe.doe@wolox.com.ar');
+        chai
+          .request(server)
+          .get('/users')
+          .query({ limit: 2, page: 2 })
+          .set(sessionManager.HEADER_NAME, hash)
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.have.property('page');
+            res.body.should.have.property('count');
+            res.body.should.have.property('rows');
+
+            res.body.page.should.be.equal('2');
+          })
+          .then(() => done());
+      });
       it('should fail because limit is not a number', done => {
         const hash = authenticate('joe.doe@wolox.com.ar');
         chai
@@ -396,8 +430,6 @@ describe('users', () => {
           .then(() => done());
       });
     });
-  });
-  describe('/users GET', () => {
     it('should fail because page is not a number', done => {
       const hash = authenticate('joe.doe@wolox.com.ar');
       chai
