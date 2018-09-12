@@ -1,10 +1,13 @@
 const chai = require('chai'),
   dictum = require('dictum.js'),
   sessionManager = require('../app/services/sessionManager'),
+  userService = require('../app/services/users'),
   server = require('./../app'),
   should = chai.should();
 
 const authenticate = email => sessionManager.encode(email);
+
+const countRecords = () => userService.count();
 
 describe('users', () => {
   describe('/users POST', () => {
@@ -394,23 +397,54 @@ describe('users', () => {
           })
           .then(() => done());
       });
-      it('should return the rows corrponding to established page', done => {
+      it('should return the rows correponding to last page', done => {
         const hash = authenticate('joe.doe@wolox.com.ar');
-        chai
-          .request(server)
-          .get('/users')
-          .query({ limit: 2, page: 2 })
-          .set(sessionManager.HEADER_NAME, hash)
-          .then(res => {
-            res.should.have.status(200);
-            res.should.be.json;
-            res.body.should.have.property('page');
-            res.body.should.have.property('count');
-            res.body.should.have.property('rows');
+        countRecords().then(totalRows => {
+          const limit = 5;
+          const page = Math.ceil(totalRows / limit) - 1; // Last page with results
+          const offset = totalRows - page * limit;
+          chai
+            .request(server)
+            .get('/users')
+            .query({ limit, page })
+            .set(sessionManager.HEADER_NAME, hash)
+            .then(res => {
+              res.should.have.status(200);
+              res.should.be.json;
+              res.body.should.have.property('page');
+              res.body.should.have.property('count');
+              res.body.should.have.property('rows');
 
-            res.body.page.should.be.equal('2');
-          })
-          .then(() => done());
+              res.body.page.should.be.equal(page.toString());
+
+              res.body.rows.length.should.be.equal(offset);
+            })
+            .then(() => done());
+        });
+      });
+      it('should return an empty array because page overshoot total rows', done => {
+        const hash = authenticate('joe.doe@wolox.com.ar');
+        countRecords().then(totalRows => {
+          const limit = 5;
+          const page = Math.ceil(totalRows / limit) + 1; // First page without results
+          chai
+            .request(server)
+            .get('/users')
+            .query({ limit, page })
+            .set(sessionManager.HEADER_NAME, hash)
+            .then(res => {
+              res.should.have.status(200);
+              res.should.be.json;
+              res.body.should.have.property('page');
+              res.body.should.have.property('count');
+              res.body.should.have.property('rows');
+
+              res.body.page.should.be.equal(page.toString());
+
+              res.body.rows.length.should.be.equal(0);
+            })
+            .then(() => done());
+        });
       });
       it('should fail because limit is not a number', done => {
         const hash = authenticate('joe.doe@wolox.com.ar');
