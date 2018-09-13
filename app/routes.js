@@ -1,4 +1,5 @@
 const usersController = require('./controllers/users'),
+  albumsController = require('./controllers/albums'),
   validations = require('./middlewares/validations'),
   auth = require('./middlewares/auth');
 
@@ -11,4 +12,5 @@ exports.init = app => {
     usersController.createAdmin
   );
   app.get('/users', [auth.authenticate, validations.paginateValidator], usersController.getUsers);
+  app.get('/albums', [auth.authenticate], albumsController.getAll);
 };
