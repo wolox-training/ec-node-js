@@ -6,10 +6,6 @@ const chai = require('chai'),
   usersHelper = require('./helper/users'),
   should = chai.should();
 
-const authenticate = email => sessionManager.encode(email);
-
-const countRecords = () => userService.count();
-
 describe('users', () => {
   describe('/users POST', () => {
     it('should be successful', done => {
@@ -316,7 +312,7 @@ describe('users', () => {
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
 
-          res.body.message.should.be.equal('User joe.doe@wolox.com.ar is not Admin'); // TODO
+          res.body.message.should.be.equal('User joe.doe@wolox.com.ar is not Admin');
         })
         .then(() => done());
     });
@@ -361,7 +357,7 @@ describe('users', () => {
         })
         .then(() => done());
     });
-    it('ONLY should fail using an expired token', done => {
+    it('should fail using an expired token', done => {
       const authorization = usersHelper.expiredUser();
       chai
         .request(server)
@@ -427,12 +423,12 @@ describe('users', () => {
     });
     describe('/users GET', () => {
       it('should be successful', done => {
-        const hash = authenticate('joe.doe@wolox.com.ar');
+        const authorization = usersHelper.defaultUser();
         chai
           .request(server)
           .get('/users')
           .query({ limit: 5, page: 0 })
-          .set(sessionManager.HEADER_NAME, hash)
+          .set(sessionManager.HEADER_NAME, authorization)
           .then(res => {
             res.should.have.status(200);
             res.should.be.json;
@@ -444,12 +440,12 @@ describe('users', () => {
           .then(() => done());
       });
       it('should return as many rows per page as the established limit', done => {
-        const hash = authenticate('joe.doe@wolox.com.ar');
+        const authorization = usersHelper.defaultUser();
         chai
           .request(server)
           .get('/users')
           .query({ limit: 2, page: 0 })
-          .set(sessionManager.HEADER_NAME, hash)
+          .set(sessionManager.HEADER_NAME, authorization)
           .then(res => {
             res.should.have.status(200);
             res.should.be.json;
@@ -462,8 +458,8 @@ describe('users', () => {
           .then(() => done());
       });
       it('should return the rows correponding to last page', done => {
-        const hash = authenticate('joe.doe@wolox.com.ar');
-        countRecords().then(totalRows => {
+        const authorization = usersHelper.defaultUser();
+        userService.count().then(totalRows => {
           const limit = 5;
           const page = Math.ceil(totalRows / limit) - 1; // Last page with results
           const offset = totalRows - page * limit;
@@ -471,7 +467,7 @@ describe('users', () => {
             .request(server)
             .get('/users')
             .query({ limit, page })
-            .set(sessionManager.HEADER_NAME, hash)
+            .set(sessionManager.HEADER_NAME, authorization)
             .then(res => {
               res.should.have.status(200);
               res.should.be.json;
@@ -487,15 +483,15 @@ describe('users', () => {
         });
       });
       it('should return an empty array because page overshoot total rows', done => {
-        const hash = authenticate('joe.doe@wolox.com.ar');
-        countRecords().then(totalRows => {
+        const authorization = usersHelper.defaultUser();
+        userService.count().then(totalRows => {
           const limit = 5;
           const page = Math.ceil(totalRows / limit) + 1; // First page without results
           chai
             .request(server)
             .get('/users')
             .query({ limit, page })
-            .set(sessionManager.HEADER_NAME, hash)
+            .set(sessionManager.HEADER_NAME, authorization)
             .then(res => {
               res.should.have.status(200);
               res.should.be.json;
@@ -511,12 +507,12 @@ describe('users', () => {
         });
       });
       it('should fail because limit is not a number', done => {
-        const hash = authenticate('joe.doe@wolox.com.ar');
+        const authorization = usersHelper.defaultUser();
         chai
           .request(server)
           .get('/users')
           .query({ limit: 'string', page: 0 })
-          .set(sessionManager.HEADER_NAME, hash)
+          .set(sessionManager.HEADER_NAME, authorization)
           .then(res => {
             res.should.have.status(400);
             res.should.be.json;
@@ -529,11 +525,11 @@ describe('users', () => {
       });
     });
     it('should fail because page is not a number', done => {
-      const hash = authenticate('joe.doe@wolox.com.ar');
+      const authorization = usersHelper.defaultUser();
       chai
         .request(server)
         .get('/users')
-        .set(sessionManager.HEADER_NAME, hash)
+        .set(sessionManager.HEADER_NAME, authorization)
         .query({ limit: 5, page: 'string' })
         .then(res => {
           res.should.have.status(400);
@@ -542,6 +538,88 @@ describe('users', () => {
           res.body.should.have.property('internal_code');
 
           res.body.message[0].message.should.be.equal('"page" must be a number');
+        })
+        .then(() => done());
+    });
+  });
+  describe('/users/invalidate_all POST', () => {
+    it('should be succesfull and secret must have changed', done => {
+      const authorization = usersHelper.adminUser();
+      const secret = process.env.SECRET;
+      chai
+        .request(server)
+        .post('/users/invalidate_all')
+        .set(sessionManager.HEADER_NAME, authorization)
+        .send()
+        .then(res => {
+          res.should.have.status(200);
+          res.should.be.json;
+          res.body.should.have.property('message');
+
+          secret.should.not.be.equal(process.env.SECRET);
+
+          res.body.message.should.be.equal('All tokens were invalidated');
+        })
+        .then(() => done());
+    });
+    it('should fail because old tokens must were invalid', done => {
+      const authorization = usersHelper.adminUser();
+      chai
+        .request(server)
+        .post('/users/invalidate_all')
+        .set(sessionManager.HEADER_NAME, authorization)
+        .send()
+        .then(() => {
+          return chai
+            .request(server)
+            .post('/users/invalidate_all')
+            .set(sessionManager.HEADER_NAME, authorization)
+            .send()
+            .then(res => {
+              res.should.have.status(401);
+              res.should.be.json;
+              res.body.should.have.property('message');
+              res.body.should.have.property('internal_code');
+
+              res.body.message.should.be.equal('invalid signature');
+            });
+        })
+        .then(() => done());
+    });
+    it('should fail because user is not authenticated', done => {
+      chai
+        .request(server)
+        .post('/users/invalidate_all')
+        .send()
+        .then(res => {
+          res.should.have.status(401);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('No authorization provided');
+        })
+        .then(() => done());
+    });
+    it('should fail because user is not admin', done => {
+      const authorization = usersHelper.defaultUser();
+      chai
+        .request(server)
+        .post('/admin/users')
+        .set(sessionManager.HEADER_NAME, authorization)
+        .send({
+          firstName: 'Anna',
+          lastName: 'Rose',
+          password: 'password1234',
+          email: 'anna.rose@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(403);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('User joe.doe@wolox.com.ar is not Admin');
         })
         .then(() => done());
     });

@@ -52,7 +52,7 @@ describe('albums', () => {
         })
         .then(() => done());
     });
-    it('ONLY should handle external api error case', done => {
+    it('should handle external api error case', done => {
       failureProxy();
       const hash = authenticate('joe.doe@wolox.com.ar');
       chai
