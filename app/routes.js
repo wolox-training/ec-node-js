@@ -10,4 +10,5 @@ exports.init = app => {
     [auth.authenticate, auth.isAdmin, validations.userValidator],
     usersController.createAdmin
   );
+  app.get('/users', [auth.authenticate, validations.paginateValidator], usersController.getUsers);
 };
