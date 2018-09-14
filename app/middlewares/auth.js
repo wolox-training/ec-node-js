@@ -11,6 +11,8 @@ exports.authenticate = (req, res, next) => {
         if (found) {
           req.user = found;
           next();
+        } else {
+          next(errors.unauthorizedUserError('Error checking token'));
         }
       });
     } catch (error) {

@@ -623,5 +623,27 @@ describe('users', () => {
         })
         .then(() => done());
     });
+    it('should fail because user is not in the database', done => {
+      const authorization = usersHelper.deletedUser();
+      chai
+        .request(server)
+        .post('/admin/users')
+        .set(sessionManager.HEADER_NAME, authorization)
+        .send({
+          firstName: 'Anna',
+          lastName: 'Rose',
+          password: 'password1234',
+          email: 'anna.rose@wolox.com.ar'
+        })
+        .then(res => {
+          res.should.have.status(401);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('Error checking token');
+        })
+        .then(() => done());
+    });
   });
 });
