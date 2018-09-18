@@ -28,6 +28,6 @@ exports.isAdmin = (req, res, next) => {
   if (user.isAdmin) {
     next();
   } else {
-    next(errors.notPermissionsError(`User ${user.email} is not Admin`));
+    next(errors.notPermissionsError(`User '${user.email}' is not Admin`));
   }
 };
