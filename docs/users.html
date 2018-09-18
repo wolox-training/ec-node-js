@@ -1,73 +1,73 @@
-<html><head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /><script src="https://code.jquery.com/jquery-1.12.2.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script><style> pre { width: 95%; } </style></head><body><div class="container"><div class="jumbotron"><h1>Users</h1></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-POST" href="#collapse-users-POST">POST /users</a></h4></div><div id="collapse-users-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+<html><head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /><script src="https://code.jquery.com/jquery-1.12.2.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script><style> pre { width: 95%; } </style></head><body><div class="container"><div class="jumbotron"><h1>Users</h1></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-GET"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-GET" href="#collapse-users-GET">GET /users?limit=5&page=0</a></h4></div><div id="collapse-users-GET" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-GET"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiTGVhbm5hX0hhYWdAd29sb3guY29tLmFyIiwiaWF0IjoxNTM3MjkwNzUxLCJleHAiOjE1MzcyOTQzNTF9.JKXv5aWltdMq0hkUIBRvfOxWhmhHmfJc05IWywrKc-w"
+}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiTGVhbm5hX0hhYWdAd29sb3guY29tLmFyIiwiaWF0IjoxNTM3MjkwNzUxLCJleHAiOjE1MzcyOTQzNTF9.JKXv5aWltdMq0hkUIBRvfOxWhmhHmfJc05IWywrKc-w"
+}</pre><h5>Body</h5><pre>{
+  "page": "0",
+  "count": 62,
+  "rows": [
+    {
+      "firstName": "Naomi",
+      "lastName": "Hegmann",
+      "email": "Leanna_Haag@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Edison",
+      "lastName": "McGlynn",
+      "email": "Keira_Schoen57@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Mellie",
+      "lastName": "Paucek",
+      "email": "Aubree.Erdman@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Glen",
+      "lastName": "Koelpin",
+      "email": "Anabelle_Cruickshank@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Deja",
+      "lastName": "Towne",
+      "email": "Hildegard_Simonis79@wolox.com.ar",
+      "isAdmin": false
+    }
+  ]
+}</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-POST" href="#collapse-users-POST">POST /users</a></h4></div><div id="collapse-users-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
   "content-type": "application/json",
   "content-length": 97
 }</pre><h5>Body</h5><pre>{
-  "firstName": "firstName",
-  "lastName": "lastName",
-  "password": "pass1234",
-  "email": "user@wolox.com.ar"
+  "firstName": "Anna",
+  "lastName": "Rose",
+  "email": "anna.rose@wolox.com.ar",
+  "password": "password1234"
 }</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 201</h5><h5>Headers</h5><pre>{
   "content-type": "application/json",
   "content-length": 97
 }</pre><h5>Body</h5><pre>{
   "isAdmin": false,
-  "id": 9,
-  "firstName": "firstName",
-  "lastName": "lastName",
-  "password": "$2a$10$BiRTNe/GZXxFCMv6A7/R1.Og9QevpaO2iaOh7zwLuGM7n3EHRhR42",
-  "email": "user@wolox.com.ar",
-  "updatedAt": "2018-09-18T03:50:08.976Z",
-  "createdAt": "2018-09-18T03:50:08.976Z",
+  "id": 1,
+  "firstName": "Anna",
+  "lastName": "Rose",
+  "email": "anna.rose@wolox.com.ar",
+  "password": "$2a$10$nS6moWYDrEvrhfMxgo1HYefRBcN5ftZCNzDWfa2wHOGDWCzvD6tHK",
+  "updatedAt": "2018-09-18T17:12:31.775Z",
+  "createdAt": "2018-09-18T17:12:31.775Z",
   "deletedAt": null
 }</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-sessions-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-sessions-POST" href="#collapse-users-sessions-POST">POST /users/sessions</a></h4></div><div id="collapse-users-sessions-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-sessions-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
   "content-type": "application/json",
-  "content-length": 58
+  "content-length": 66
 }</pre><h5>Body</h5><pre>{
-  "password": "password1234",
-  "email": "joe.doe@wolox.com.ar"
+  "email": "Presley.Schmidt@wolox.com.ar",
+  "password": "password1234"
 }</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
   "content-type": "application/json",
-  "content-length": 58
+  "content-length": 66
 }</pre><h5>Body</h5><pre>{
-  "msg": "User joe.doe@wolox.com.ar signed in correctly!",
+  "msg": "User Presley.Schmidt@wolox.com.ar signed in correctly!",
   "expirationTime": "1h"
-}</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-GET"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-GET" href="#collapse-users-GET">GET /users?limit=5&page=0</a></h4></div><div id="collapse-users-GET" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-GET"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
-  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiam9lLmRvZUB3b2xveC5jb20uYXIiLCJpYXQiOjE1MzcyNDI2MDksImV4cCI6MTUzNzI0NjIwOX0.OE7kTzmHjprAl3K2D8qetz46-q_-3fIHb6m1ULR7OGg"
-}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
-  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiam9lLmRvZUB3b2xveC5jb20uYXIiLCJpYXQiOjE1MzcyNDI2MDksImV4cCI6MTUzNzI0NjIwOX0.OE7kTzmHjprAl3K2D8qetz46-q_-3fIHb6m1ULR7OGg"
-}</pre><h5>Body</h5><pre>{
-  "page": "0",
-  "count": 8,
-  "rows": [
-    {
-      "firstName": "Roze",
-      "lastName": "Shrimplin",
-      "email": "rshrimpling@wolox.com.ar",
-      "isAdmin": false
-    },
-    {
-      "firstName": "Denyer",
-      "lastName": "Adorne",
-      "email": "adenyerh@wolox.com.ar",
-      "isAdmin": false
-    },
-    {
-      "firstName": "Peachey",
-      "lastName": "Lloyd",
-      "email": "lpeacheyi@wolox.com.ar",
-      "isAdmin": false
-    },
-    {
-      "firstName": "Fines",
-      "lastName": "Montgomery",
-      "email": "mfinesj@wolox.com.ar",
-      "isAdmin": false
-    },
-    {
-      "firstName": "Harold",
-      "lastName": "Lamboll",
-      "email": "hlambollk@wolox.com.ar",
-      "isAdmin": false
-    }
-  ]
 }</pre></div></div></div></div></div></body></html>

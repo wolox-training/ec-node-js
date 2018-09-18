@@ -3,13 +3,13 @@ const chai = require('chai'),
   sessionManager = require('../../app/services/sessionManager'),
   userService = require('../../app/services/users'),
   server = require('../../app'),
-  usersScenarios = require('../scenarios/users'),
+  usersHelpers = require('../helpers/users'),
   should = chai.should();
 
 describe('Users', () => {
   describe('GET /users', () => {
     it('Given a default user token as auth should be successful', done => {
-      usersScenarios.perform('Create many users and authenticate with first').then(({ authorization }) => {
+      usersHelpers.createManyUsersAndAuth().then(({ authorization }) => {
         chai
           .request(server)
           .get('/users')
@@ -27,7 +27,7 @@ describe('Users', () => {
       });
     });
     it('Given a page limit should return as many rows per page as the established limit', done => {
-      usersScenarios.perform('Create many users and authenticate with first').then(({ authorization }) => {
+      usersHelpers.createManyUsersAndAuth(15).then(({ authorization }) => {
         chai
           .request(server)
           .get('/users')
@@ -46,58 +46,54 @@ describe('Users', () => {
       });
     });
     it('Given a page limit the number of rows in last page must correspond with offset', done => {
-      usersScenarios.perform('Create many users and authenticate with first').then(({ authorization }) => {
-        userService.count().then(totalRows => {
-          const limit = 5;
-          const page = Math.floor(totalRows / limit); // Last page with results
-          const offset = totalRows - page * limit;
-          chai
-            .request(server)
-            .get('/users')
-            .query({ limit, page })
-            .set(sessionManager.HEADER_NAME, authorization)
-            .then(res => {
-              res.should.have.status(200);
-              res.should.be.json;
-              res.body.should.have.property('page');
-              res.body.should.have.property('count');
-              res.body.should.have.property('rows');
+      usersHelpers.createManyUsersAndAuth().then(({ authorization, totalRows }) => {
+        const limit = 5;
+        const page = Math.floor(totalRows / limit); // Last page with results
+        const offset = totalRows - page * limit;
+        chai
+          .request(server)
+          .get('/users')
+          .query({ limit, page })
+          .set(sessionManager.HEADER_NAME, authorization)
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.have.property('page');
+            res.body.should.have.property('count');
+            res.body.should.have.property('rows');
 
-              res.body.page.should.be.equal(page.toString());
+            res.body.page.should.be.equal(page.toString());
 
-              res.body.rows.length.should.be.equal(offset);
-            })
-            .then(() => done());
-        });
+            res.body.rows.length.should.be.equal(offset);
+          })
+          .then(() => done());
       });
     });
     it('Given a page that overshoot total rows should return an empty array', done => {
-      usersScenarios.perform('Create many users and authenticate with first').then(({ authorization }) => {
-        userService.count().then(totalRows => {
-          const limit = 5;
-          const page = Math.floor(totalRows / limit) + 1; // First page without results
-          chai
-            .request(server)
-            .get('/users')
-            .query({ limit, page })
-            .set(sessionManager.HEADER_NAME, authorization)
-            .then(res => {
-              res.should.have.status(200);
-              res.should.be.json;
-              res.body.should.have.property('page');
-              res.body.should.have.property('count');
-              res.body.should.have.property('rows');
+      usersHelpers.createManyUsersAndAuth().then(({ authorization, totalRows }) => {
+        const limit = 5;
+        const page = Math.floor(totalRows / limit) + 1; // First page without results
+        chai
+          .request(server)
+          .get('/users')
+          .query({ limit, page })
+          .set(sessionManager.HEADER_NAME, authorization)
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.have.property('page');
+            res.body.should.have.property('count');
+            res.body.should.have.property('rows');
 
-              res.body.page.should.be.equal(page.toString());
+            res.body.page.should.be.equal(page.toString());
 
-              res.body.rows.length.should.be.equal(0);
-            })
-            .then(() => done());
-        });
+            res.body.rows.length.should.be.equal(0);
+          })
+          .then(() => done());
       });
     });
     it('Given a not numeric limit should be unsuccessful', done => {
-      usersScenarios.perform('Create many users and authenticate with first').then(({ authorization }) => {
+      usersHelpers.createManyUsersAndAuth().then(({ authorization }) => {
         chai
           .request(server)
           .get('/users')
@@ -115,7 +111,7 @@ describe('Users', () => {
       });
     });
     it('Given a not numeric page should  be unsuccessful', done => {
-      usersScenarios.perform('Create many users and authenticate with first').then(({ authorization }) => {
+      usersHelpers.createManyUsersAndAuth().then(({ authorization }) => {
         chai
           .request(server)
           .get('/users')
@@ -139,7 +135,7 @@ describe('Users', () => {
       chai
         .request(server)
         .post('/users')
-        .send(usersScenarios.fakes.user())
+        .send(usersHelpers.fakes.user())
         .then(res => {
           res.should.have.status(201);
           res.should.be.json;
@@ -156,7 +152,7 @@ describe('Users', () => {
       chai
         .request(server)
         .post('/users')
-        .send(usersScenarios.fakes.user({ password: undefined }))
+        .send(usersHelpers.fakes.user({ password: undefined }))
         .then(res => {
           res.should.have.status(400);
           res.should.be.json;
@@ -172,7 +168,7 @@ describe('Users', () => {
       chai
         .request(server)
         .post('/users')
-        .send(usersScenarios.fakes.user({ email: 'email' }))
+        .send(usersHelpers.fakes.user({ email: 'email' }))
         .then(res => {
           res.should.have.status(400);
           res.should.be.json;
@@ -188,7 +184,7 @@ describe('Users', () => {
       chai
         .request(server)
         .post('/users')
-        .send(usersScenarios.fakes.user({ email: 'email@other.com.ar' }))
+        .send(usersHelpers.fakes.user({ email: 'email@other.com.ar' }))
         .then(res => {
           res.should.have.status(400);
           res.should.be.json;
@@ -206,7 +202,7 @@ describe('Users', () => {
       chai
         .request(server)
         .post('/users')
-        .send(usersScenarios.fakes.user({ password: 'password' }))
+        .send(usersHelpers.fakes.user({ password: 'password' }))
         .then(res => {
           res.should.have.status(400);
           res.should.be.json;
@@ -223,7 +219,7 @@ describe('Users', () => {
       chai
         .request(server)
         .post('/users')
-        .send(usersScenarios.fakes.user({ password: 'abc123' }))
+        .send(usersHelpers.fakes.user({ password: 'abc123' }))
         .then(res => {
           res.should.have.status(400);
           res.should.be.json;
@@ -236,11 +232,11 @@ describe('Users', () => {
         .catch(err => done(err));
     });
     it('Given an already created email should be unsuccessful', done => {
-      usersScenarios.perform('Create a default user and authenticate').then(({ user }) =>
+      usersHelpers.createUserAndAuth().then(({ user }) => {
         chai
           .request(server)
           .post('/users')
-          .send(usersScenarios.fakes.user({ email: user.email }))
+          .send(usersHelpers.fakes.user({ email: user.email }))
           .then(res => {
             res.should.have.status(409);
             res.should.be.json;
@@ -250,14 +246,14 @@ describe('Users', () => {
             res.body.message.should.be.equal(`E-mail '${user.email}' already registered`);
             done();
           })
-          .catch(err => done(err))
-      );
+          .catch(err => done(err));
+      });
     });
   });
   describe('POST /users/invalidate_all', () => {
     it('Given an admin user token as auth should be succesful and change SECRET', done => {
       const secret = process.env.SECRET;
-      usersScenarios.perform('Create an admin user and authenticate').then(({ authorization }) =>
+      usersHelpers.createAdminAndAuth().then(({ authorization }) => {
         chai
           .request(server)
           .post('/users/invalidate_all')
@@ -273,11 +269,11 @@ describe('Users', () => {
             res.body.message.should.be.equal('All tokens were invalidated');
             done();
           })
-          .catch(err => done(err))
-      );
+          .catch(err => done(err));
+      });
     });
     it('Given an admin user token as auth should be succesful and invalidate previous tokens', done => {
-      usersScenarios.perform('Create an admin user and authenticate').then(({ authorization }) =>
+      usersHelpers.createAdminAndAuth().then(({ authorization }) => {
         chai
           .request(server)
           .post('/users/invalidate_all')
@@ -299,11 +295,11 @@ describe('Users', () => {
                 done();
               });
           })
-          .catch(err => done(err))
-      );
+          .catch(err => done(err));
+      });
     });
     it('Given a default user token as auth should be unsuccessful', done => {
-      usersScenarios.perform('Create a default user and authenticate').then(({ user, authorization }) =>
+      usersHelpers.createUserAndAuth().then(({ user, authorization }) => {
         chai
           .request(server)
           .post('/users/invalidate_all')
@@ -318,17 +314,17 @@ describe('Users', () => {
             res.body.message.should.be.equal(`User '${user.email}' is not Admin`);
             done();
           })
-          .catch(err => done(err))
-      );
+          .catch(err => done(err));
+      });
     });
   });
   describe('POST /users/sessions', () => {
     it('Given an default user and using valid body should be succesful', done => {
-      usersScenarios.perform('Create a default user and authenticate').then(({ user }) =>
+      usersHelpers.createUserAndAuth().then(({ user }) => {
         chai
           .request(server)
           .post('/users/sessions')
-          .send(usersScenarios.fakes.session({ email: user.email }))
+          .send(usersHelpers.fakes.session({ email: user.email }))
           .then(res => {
             res.should.have.status(200);
             res.should.be.json;
@@ -338,14 +334,14 @@ describe('Users', () => {
             dictum.chai(res);
             done();
           })
-          .catch(err => done(err))
-      );
+          .catch(err => done(err));
+      });
     });
     it('Given an invalid email should be unsuccesful', done => {
       chai
         .request(server)
         .post('/users/sessions')
-        .send(usersScenarios.fakes.session({ email: 'email@other.com' }))
+        .send(usersHelpers.fakes.session({ email: 'email@other.com' }))
         .then(res => {
           res.should.have.status(400);
           res.should.be.json;
@@ -363,7 +359,7 @@ describe('Users', () => {
       chai
         .request(server)
         .post('/users/sessions')
-        .send(usersScenarios.fakes.session({ password: 'abc123' }))
+        .send(usersHelpers.fakes.session({ password: 'abc123' }))
         .then(res => {
           res.should.have.status(400);
           res.should.be.json;
@@ -379,24 +375,24 @@ describe('Users', () => {
       chai
         .request(server)
         .post('/users/sessions')
-        .send(usersScenarios.fakes.session())
+        .send(usersHelpers.fakes.session())
         .then(res => {
           res.should.have.status(400);
           res.should.be.json;
           res.body.should.have.property('message');
           res.body.should.have.property('internal_code');
 
-          res.body.message.should.be.equal(`Cannot find user '${usersScenarios.fakes.session().email}'!`);
+          res.body.message.should.be.equal(`Cannot find user '${usersHelpers.fakes.session().email}'!`);
           done();
         })
         .catch(err => done(err));
     });
     it('Given an incorrect password should be unsuccesful', done => {
-      usersScenarios.perform('Create a default user and authenticate').then(({ user }) =>
+      usersHelpers.createUserAndAuth().then(({ user }) => {
         chai
           .request(server)
           .post('/users/sessions')
-          .send(usersScenarios.fakes.session({ email: user.email, password: '123notcorrect' }))
+          .send(usersHelpers.fakes.session({ email: user.email, password: '123notcorrect' }))
           .then(res => {
             res.should.have.status(400);
             res.should.be.json;
@@ -406,8 +402,8 @@ describe('Users', () => {
             res.body.message.should.be.equal('Email or password are incorrect!');
             done();
           })
-          .catch(err => done(err))
-      );
+          .catch(err => done(err));
+      });
     });
   });
 });
