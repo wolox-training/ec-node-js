@@ -13,8 +13,8 @@ exports.create = values =>
     throw errors.databaseError(err.message);
   });
 
-exports.updateOrCreate = record =>
-  User.upsert(record).catch(err => {
+exports.update = (user, values) =>
+  user.update(values).catch(err => {
     throw errors.databaseError(err.message);
   });
 

@@ -38,20 +38,18 @@ const createAdmin = (req, res, next) => {
   try {
     userService.find({ email: user.email }).then(found => {
       if (found) {
-        found.set('isAdmin', true);
-        found.save().then(updated => {
+        userService.update(found, { isAdmin: true }).then(updated => {
           logger.info(`User #${found.id} with e-mail ${user.email} is now Admin!`);
           res.status(200).send(updated);
         });
       } else {
-        if (!user.password) {
-          next(errors.requestError('"password" is required to create a new user'));
-        } else {
-          user.isAdmin = true;
-          encryptAndCreateUser(user).then(created => {
+        if (user.password) {
+          encryptAndCreateUser({ ...user, isAdmin: true }).then(created => {
             logger.info(`Admin #${created.id} with e-mail ${created.email} created succesfully!`);
             res.status(201).send(created);
           });
+        } else {
+          next(errors.requestError('"password" is required to create a new user'));
         }
       }
     });
