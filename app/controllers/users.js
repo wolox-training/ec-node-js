@@ -35,21 +35,29 @@ const create = (req, res, next) => {
 
 const createAdmin = (req, res, next) => {
   const user = req.body;
-  encryptUserPassword(user).then(hashedUser => {
-    hashedUser.isAdmin = true;
-    userService
-      .updateOrCreate(hashedUser)
-      .then(created => {
-        if (created) {
-          logger.info(`Admin with e-mail ${hashedUser.email} created succesfully!`);
-          res.status(201).send(hashedUser);
+  try {
+    userService.find({ email: user.email }).then(found => {
+      if (found) {
+        found.set('isAdmin', true);
+        found.save().then(updated => {
+          logger.info(`User #${found.id} with e-mail ${user.email} is now Admin!`);
+          res.status(200).send(updated);
+        });
+      } else {
+        if (!user.password) {
+          next(errors.requestError('"password" is required to create a new user'));
         } else {
-          logger.info(`User with e-mail ${hashedUser.email} is now admin!`);
-          res.status(200).send(hashedUser);
+          user.isAdmin = true;
+          encryptAndCreateUser(user).then(created => {
+            logger.info(`Admin #${created.id} with e-mail ${created.email} created succesfully!`);
+            res.status(201).send(created);
+          });
         }
-      })
-      .catch(next);
-  });
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 const signin = (req, res, next) => {
@@ -73,7 +81,7 @@ const signin = (req, res, next) => {
           }
         });
       } else {
-        next(errors.invalidUserError(`Cannot find user ${email}!`));
+        next(errors.invalidUserError(`Cannot find user '${email}'!`));
       }
     })
     .catch(next);
