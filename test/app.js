@@ -4,8 +4,7 @@ const fs = require('fs'),
   path = require('path'),
   chai = require('chai'),
   chaiHttp = require('chai-http'),
-  models = require('../app/models'),
-  dataCreation = require('../scripts/dataCreation');
+  models = require('../app/models');
 
 chai.use(chaiHttp);
 
@@ -15,9 +14,7 @@ const truncateTable = model =>
 const truncateDatabase = () => Promise.all(Object.values(models.sequelize.models).map(truncateTable));
 
 beforeEach('drop tables, re-create them and populate sample data', done => {
-  truncateDatabase()
-    .then(() => dataCreation.execute())
-    .then(() => done());
+  truncateDatabase().then(() => done());
 });
 
 // including all test files
