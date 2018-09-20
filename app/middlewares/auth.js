@@ -23,22 +23,19 @@ exports.authenticate = (req, res, next) => {
   }
 };
 
-exports.isAdmin = (req, res, next) => {
-  const user = req.user;
-  if (user.isAdmin) {
-    next();
-  } else {
-    next(errors.notPermissionsError(`User '${user.email}' is not Admin`));
-  }
+const permissions = {
+  isAdmin: user => user.isAdmin,
+  isOwner: (user, ownerId) => user.id === Number(ownerId),
+  isOwnerOrAdmin: (user, ownerId) => user.isAdmin || user.id === Number(ownerId)
 };
 
-exports.isOwnerOrAdmin = (req, res, next) => {
+exports.permissions = validation => (req, res, next) => {
   const user = req.user,
-    ownerId = Number(req.params.userId);
+    ownerId = req.params.userId;
 
-  if (user.isAdmin || user.id === ownerId) {
+  if (permissions[validation](user, ownerId)) {
     next();
   } else {
-    next(errors.notPermissionsError(`User '${user.email}' has no access`));
+    next(errors.notPermissionsError(`User '${user.email}' has not permissions`));
   }
 };

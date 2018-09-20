@@ -46,7 +46,7 @@ const listPurchasedAlbumPhotos = (req, res, next) => {
           .then(photos => res.status(200).send(photos))
           .catch(next);
       } else {
-        next(errors.notPermissionsError(`User '${user.email}' has no access`));
+        next(errors.notPermissionsError(`User '${user.email}' has not permissions`));
       }
     })
     .catch(next);

@@ -250,13 +250,13 @@ describe('Album Purchases', () => {
       );
     });
   });
-  describe('GET /albums/:id/photos', () => {
+  describe('GET /users/:userId/albums/:albumId/photos', () => {
     it('Given a default user that already bought album should be successful', done => {
-      usersHelpers.buyAlbumAsUser().then(({ authorization, albumPurchase }) => {
+      usersHelpers.buyAlbumAsUser().then(({ user, authorization, albumPurchase }) => {
         albumPurchasesHelpers.mockPhotosToSuccess(albumPurchase.albumId);
         return chai
           .request(server)
-          .get(`/albums/${albumPurchase.albumId}/photos`)
+          .get(`/users/${user.id}/albums/${albumPurchase.albumId}/photos`)
           .set(sessionManager.HEADER_NAME, authorization)
           .send()
           .then(res => {
@@ -275,7 +275,7 @@ describe('Album Purchases', () => {
         albumPurchasesHelpers.mockPhotosToSuccess(1);
         return chai
           .request(server)
-          .get(`/albums/1/photos`)
+          .get(`/users/${user.id}/albums/1/photos`)
           .set(sessionManager.HEADER_NAME, authorization)
           .send()
           .then(res => {
@@ -285,28 +285,7 @@ describe('Album Purchases', () => {
             res.body.should.have.property('message');
             res.body.should.have.property('internal_code');
 
-            res.body.message.should.be.equal(`User '${user.email}' has no access`);
-            done();
-          })
-          .catch(err => done(err));
-      });
-    });
-    it('Given a non-existing album id', done => {
-      usersHelpers.buyAlbumAsUser().then(({ authorization, albumPurchase }) => {
-        albumPurchasesHelpers.mockPhotosToNotFound(albumPurchase.albumId);
-        return chai
-          .request(server)
-          .get(`/albums/${albumPurchase.albumId}/photos`)
-          .set(sessionManager.HEADER_NAME, authorization)
-          .send()
-          .then(res => {
-            res.should.have.status(404);
-            res.should.be.json;
-
-            res.body.should.have.property('message');
-            res.body.should.have.property('internal_code');
-
-            res.body.message.should.be.equal(`Resource photos for album ${albumPurchase.albumId} not found`);
+            res.body.message.should.be.equal(`User '${user.email}' has not permissions`);
             done();
           })
           .catch(err => done(err));
@@ -317,7 +296,7 @@ describe('Album Purchases', () => {
       usersHelpers.createUserAndAuth().then(({ user, authorization }) =>
         chai
           .request(server)
-          .get(`/albums/${id}/photos`)
+          .get(`/users/${user.id}/albums/${id}/photos`)
           .set(sessionManager.HEADER_NAME, authorization)
           .send()
           .then(res => {
@@ -337,7 +316,7 @@ describe('Album Purchases', () => {
       usersHelpers.createUserAndAuth().then(({ user }) =>
         chai
           .request(server)
-          .get(`/albums/${id}/photos`)
+          .get(`/users/${user.id}/albums/${id}/photos`)
           .send()
           .then(res => {
             res.should.have.status(401);
@@ -352,11 +331,11 @@ describe('Album Purchases', () => {
       );
     });
     it('Given an external API error system should handle it', done => {
-      usersHelpers.buyAlbumAsUser().then(({ authorization, albumPurchase }) => {
+      usersHelpers.buyAlbumAsUser().then(({ user, authorization, albumPurchase }) => {
         albumPurchasesHelpers.mockPhotosToFail(albumPurchase.albumId);
         return chai
           .request(server)
-          .get(`/albums/${albumPurchase.albumId}/photos`)
+          .get(`/users/${user.id}/albums/${albumPurchase.albumId}/photos`)
           .set(sessionManager.HEADER_NAME, authorization)
           .send()
           .then(res => {
