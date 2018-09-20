@@ -1,16 +1,17 @@
 const usersController = require('./controllers/users'),
   albumsController = require('./controllers/albums'),
-  validations = require('./middlewares/validations'),
+  validate = require('./middlewares/validations'),
   auth = require('./middlewares/auth');
 
 exports.init = app => {
-  app.post('/users', [validations.userValidator], usersController.create);
-  app.post('/users/sessions', [validations.signinValidator], usersController.signin);
+  app.get('/users', [auth.authenticate, validate.pagination], usersController.getUsers);
+  app.post('/users', [validate.createUser], usersController.create);
+  app.post('/users/sessions', [validate.signin], usersController.signin);
+  app.post('/users/invalidate_all', [auth.authenticate, auth.isAdmin], usersController.invalidateAllTokens);
   app.post(
     '/admin/users',
-    [auth.authenticate, auth.isAdmin, validations.userValidator],
+    [auth.authenticate, auth.isAdmin, validate.createAdmin],
     usersController.createAdmin
   );
-  app.get('/users', [auth.authenticate, validations.paginateValidator], usersController.getUsers);
   app.get('/albums', [auth.authenticate], albumsController.getAll);
 };

@@ -53,6 +53,8 @@ const init = () => {
 
       app.use(errors.handle);
 
+      require('./app/services/secretGenerator').setGlobalSecret();
+
       const rollbar = new Rollbar({
         accessToken: config.common.rollbar.accessToken,
         enabled: !!config.common.rollbar.accessToken,

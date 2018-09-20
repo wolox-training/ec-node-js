@@ -16,10 +16,19 @@ const emailValidation = Joi.string()
 
 const passValidation = Joi.string()
   .regex(/^(?=.*[0-9])(?=.*[a-zA-Z])([a-zA-Z0-9]+)$/, { name: 'Alphanumeric' })
-  .min(8)
-  .required();
+  .min(8);
 
-const userValidator = validate(
+const createUser = validate(
+  'body',
+  Joi.object({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    email: emailValidation,
+    password: passValidation.required()
+  })
+);
+
+const createAdmin = validate(
   'body',
   Joi.object({
     firstName: Joi.string().required(),
@@ -29,7 +38,7 @@ const userValidator = validate(
   })
 );
 
-const signinValidator = validate(
+const signin = validate(
   'body',
   Joi.object({
     email: emailValidation,
@@ -37,7 +46,7 @@ const signinValidator = validate(
   })
 );
 
-const paginateValidator = validate(
+const pagination = validate(
   'query',
   Joi.object({
     limit: Joi.number().integer(),
@@ -46,7 +55,8 @@ const paginateValidator = validate(
 );
 
 module.exports = {
-  userValidator,
-  signinValidator,
-  paginateValidator
+  createUser,
+  createAdmin,
+  signin,
+  pagination
 };
