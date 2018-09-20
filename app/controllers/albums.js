@@ -4,9 +4,9 @@ const albumService = require('../services/albums'),
   logger = require('../logger'),
   errors = require('../errors');
 
-exports.getAll = (req, res, next) => {
+exports.fetchAll = (req, res, next) => {
   albumService
-    .getAll()
+    .fetchAll()
     .then(data => {
       logger.info('Data fetched from external api succesfully!');
       res.status(200).send(data);

@@ -2,10 +2,9 @@
 
 const axios = require('axios');
 
+const BASE_URL = 'https://jsonplaceholder.typicode.com';
 const api = axios.create({
-  baseURL: 'https://jsonplaceholder.typicode.com'
+  baseURL: BASE_URL
 });
 
-exports.getAll = () => {
-  return api.get('/albums').then(({ data }) => data);
-};
+exports.fetchAll = () => api.get('/albums').then(({ data }) => data);

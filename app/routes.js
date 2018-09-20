@@ -13,5 +13,5 @@ exports.init = app => {
     [auth.authenticate, auth.isAdmin, validate.createAdmin],
     usersController.createAdmin
   );
-  app.get('/albums', [auth.authenticate], albumsController.getAll);
+  app.get('/albums', [auth.authenticate], albumsController.fetchAll);
 };
