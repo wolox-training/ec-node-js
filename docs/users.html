@@ -1,49 +1,87 @@
 <html><head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /><script src="https://code.jquery.com/jquery-1.12.2.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script><style> pre { width: 95%; } </style></head><body><div class="container"><div class="jumbotron"><h1>Users</h1></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-GET"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-GET" href="#collapse-users-GET">GET /users?limit=5&page=0</a></h4></div><div id="collapse-users-GET" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-GET"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
-  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiTGVvbGEyOUB3b2xveC5jb20uYXIiLCJpYXQiOjE1Mzc0MDgxMjksImV4cCI6MTUzNzQwODE1OX0.BclbnKORHGylhW5yIPrS3vELUZS9pSTXtZySpvsP4ME"
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiVGF0ZV9Lb2NoNDFAd29sb3guY29tLmFyIiwiaWF0IjoxNTM3NDc0MTg4LCJleHAiOjE1Mzc0NzQyMTh9.lyG4DzAzYZglaUut3VMRADt1jhGGB-s_Lzfxw6VnVfY"
 }</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
-  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiTGVvbGEyOUB3b2xveC5jb20uYXIiLCJpYXQiOjE1Mzc0MDgxMjksImV4cCI6MTUzNzQwODE1OX0.BclbnKORHGylhW5yIPrS3vELUZS9pSTXtZySpvsP4ME"
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiVGF0ZV9Lb2NoNDFAd29sb3guY29tLmFyIiwiaWF0IjoxNTM3NDc0MTg4LCJleHAiOjE1Mzc0NzQyMTh9.lyG4DzAzYZglaUut3VMRADt1jhGGB-s_Lzfxw6VnVfY"
 }</pre><h5>Body</h5><pre>{
   "page": "0",
-  "count": 1,
+  "count": 13,
   "rows": [
     {
-      "firstName": "Zelda",
-      "lastName": "Lindgren",
-      "email": "Leola29@wolox.com.ar",
+      "firstName": "Cecil",
+      "lastName": "Rath",
+      "email": "Tate_Koch41@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Blanche",
+      "lastName": "Pacocha",
+      "email": "Curt_Hayes33@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Lizzie",
+      "lastName": "Bogan",
+      "email": "Napoleon.Nienow@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Salvatore",
+      "lastName": "Carter",
+      "email": "Dejuan_Emmerich49@wolox.com.ar",
+      "isAdmin": false
+    },
+    {
+      "firstName": "Eldred",
+      "lastName": "Ward",
+      "email": "Elenora37@wolox.com.ar",
       "isAdmin": false
     }
   ]
 }</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-POST" href="#collapse-users-POST">POST /users</a></h4></div><div id="collapse-users-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
   "content-type": "application/json",
-  "content-length": 97
+  "content-length": 93
 }</pre><h5>Body</h5><pre>{
-  "firstName": "Anna",
-  "lastName": "Rose",
-  "email": "anna.rose@wolox.com.ar",
+  "firstName": "Joe",
+  "lastName": "Doe",
+  "email": "joe.doe@wolox.com.ar",
   "password": "password1234"
 }</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 201</h5><h5>Headers</h5><pre>{
   "content-type": "application/json",
-  "content-length": 97
+  "content-length": 93
 }</pre><h5>Body</h5><pre>{
   "isAdmin": false,
   "id": 1,
-  "firstName": "Anna",
-  "lastName": "Rose",
-  "email": "anna.rose@wolox.com.ar",
-  "password": "$2a$10$upAq7oRcg/etXU2ILcdWXu4R20pFfryxy.yBfkuOJvFPcQO80GYXS",
-  "updatedAt": "2018-09-20T01:48:49.862Z",
-  "createdAt": "2018-09-20T01:48:49.862Z",
+  "firstName": "Joe",
+  "lastName": "Doe",
+  "email": "joe.doe@wolox.com.ar",
+  "password": "$2a$10$QoPBZbO1LbINz7bYT9OWdObreVq7cC0pVSU16PRRr/k.R1hjm3XLG",
+  "updatedAt": "2018-09-20T20:09:49.240Z",
+  "createdAt": "2018-09-20T20:09:49.240Z",
   "deletedAt": null
 }</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-sessions-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-sessions-POST" href="#collapse-users-sessions-POST">POST /users/sessions</a></h4></div><div id="collapse-users-sessions-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-sessions-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
   "content-type": "application/json",
-  "content-length": 64
+  "content-length": 62
 }</pre><h5>Body</h5><pre>{
-  "email": "Orpha_Denesik@wolox.com.ar",
+  "email": "Nolan_Adams@wolox.com.ar",
   "password": "password1234"
 }</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
   "content-type": "application/json",
-  "content-length": 64
+  "content-length": 62
 }</pre><h5>Body</h5><pre>{
-  "msg": "User Orpha_Denesik@wolox.com.ar signed in correctly!",
+  "msg": "User Nolan_Adams@wolox.com.ar signed in correctly!",
   "expirationTime": "30s"
-}</pre></div></div></div></div></div></body></html>
+}</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-users-1-albums-GET"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-users-1-albums-GET" href="#collapse-users-1-albums-GET">GET /users/1/albums</a></h4></div><div id="collapse-users-1-albums-GET" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-users-1-albums-GET"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiU2NhcmxldHQuSGVhdGhjb3RlNzJAd29sb3guY29tLmFyIiwiaWF0IjoxNTM3NDc0MTg5LCJleHAiOjE1Mzc0NzQyMTl9._OYzb5_mkgMipHo8FiKOEdAb3r_Kc3BHCVphzKcQpqw"
+}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiU2NhcmxldHQuSGVhdGhjb3RlNzJAd29sb3guY29tLmFyIiwiaWF0IjoxNTM3NDc0MTg5LCJleHAiOjE1Mzc0NzQyMTl9._OYzb5_mkgMipHo8FiKOEdAb3r_Kc3BHCVphzKcQpqw"
+}</pre><h5>Body</h5><pre>[
+  {
+    "id": 1,
+    "title": "Est est incidunt dolores perferendis vel.",
+    "albumId": 39847,
+    "createdAt": "2018-09-20T20:09:49.691Z",
+    "updatedAt": "2018-09-20T20:09:49.691Z",
+    "deletedAt": null,
+    "buyerId": 1
+  }
+]</pre></div></div></div></div></div></body></html>

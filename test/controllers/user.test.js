@@ -406,4 +406,129 @@ describe('Users', () => {
       });
     });
   });
+  describe('GET /users/:id/albums', () => {
+    it('Given an admin should can see all its albums', done => {
+      usersHelpers.buyAlbumAsAdmin().then(({ admin, authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/${admin.id}/albums`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.instanceOf(Array);
+
+            dictum.chai(res);
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given an admin should can see all albums from other user', done => {
+      usersHelpers.buyAlbumAsAdmin().then(({ admin }) =>
+        usersHelpers.createAdminAndAuth().then(({ authorization }) =>
+          chai
+            .request(server)
+            .get(`/users/${admin.id}/albums`)
+            .set(sessionManager.HEADER_NAME, authorization)
+            .send()
+            .then(res => {
+              res.should.have.status(200);
+              res.should.be.json;
+              res.body.should.be.instanceOf(Array);
+
+              done();
+            })
+            .catch(err => done(err))
+        )
+      );
+    });
+    it('Given a default user should can see all its albums', done => {
+      usersHelpers.buyAlbumAsUser().then(({ user, authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/${user.id}/albums`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.instanceOf(Array);
+
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given a default user should not can see all albums from other user', done => {
+      usersHelpers.buyAlbumAsAdmin().then(({ admin }) =>
+        usersHelpers.createUserAndAuth().then(({ user, authorization }) =>
+          chai
+            .request(server)
+            .get(`/users/${admin.id}/albums`)
+            .set(sessionManager.HEADER_NAME, authorization)
+            .send()
+            .then(res => {
+              res.should.have.status(403);
+              res.should.be.json;
+
+              res.body.message.should.be.equal(`User '${user.email}' has no access`);
+              done();
+            })
+            .catch(err => done(err))
+        )
+      );
+    });
+    it('Given a non-authenticated request should throw error', done => {
+      chai
+        .request(server)
+        .get(`/users/1/albums`)
+        .send()
+        .then(res => {
+          res.should.have.status(401);
+          res.should.be.json;
+
+          res.body.message.should.be.equal(`No authorization provided`);
+          done();
+        })
+        .catch(err => done(err));
+    });
+    it('Given a non-existing user id should throw error', done => {
+      const id = 0;
+      usersHelpers.createAdminAndAuth().then(({ authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/${id}/albums`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(404);
+            res.should.be.json;
+
+            res.body.message.should.be.equal(`User #${id} not found`);
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given a non-valid user id should throw error', done => {
+      const id = 'non_valid';
+      usersHelpers.createUserAndAuth().then(({ user, authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/${id}/albums`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(400);
+            res.should.be.json;
+
+            res.body.message[0].message.should.be.equal('"userId" must be a number');
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+  });
 });

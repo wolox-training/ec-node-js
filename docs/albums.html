@@ -1,21 +1,71 @@
 <html><head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /><script src="https://code.jquery.com/jquery-1.12.2.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script><style> pre { width: 95%; } </style></head><body><div class="container"><div class="jumbotron"><h1>Albums</h1></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-albums-GET"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-albums-GET" href="#collapse-albums-GET">GET /albums</a></h4></div><div id="collapse-albums-GET" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-albums-GET"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
-  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiT3J2aWxsZV9CZWNrZXIxMUB3b2xveC5jb20uYXIiLCJpYXQiOjE1Mzc0MDgxMjgsImV4cCI6MTUzNzQwODE1OH0.4ecz9M8fhz1VOAdkHqY5fdeYuEfgAy75ZIq0oi6H5f4"
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiRGVlLkdlcmxhY2g4N0B3b2xveC5jb20uYXIiLCJpYXQiOjE1Mzc0NzQxODgsImV4cCI6MTUzNzQ3NDIxOH0.oQ7t2g0rWG6saHKPqSmakQTbAOnNPFohDdwjiuveZ7s"
 }</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
-  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiT3J2aWxsZV9CZWNrZXIxMUB3b2xveC5jb20uYXIiLCJpYXQiOjE1Mzc0MDgxMjgsImV4cCI6MTUzNzQwODE1OH0.4ecz9M8fhz1VOAdkHqY5fdeYuEfgAy75ZIq0oi6H5f4"
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiRGVlLkdlcmxhY2g4N0B3b2xveC5jb20uYXIiLCJpYXQiOjE1Mzc0NzQxODgsImV4cCI6MTUzNzQ3NDIxOH0.oQ7t2g0rWG6saHKPqSmakQTbAOnNPFohDdwjiuveZ7s"
 }</pre><h5>Body</h5><pre>[
   {
-    "userId": 1,
+    "albumId": 1,
+    "title": "Et fuga cumque sunt.",
+    "userId": 1
+  },
+  {
+    "albumId": 2,
+    "title": "Esse fugit deserunt.",
+    "userId": 1
+  },
+  {
+    "albumId": 3,
+    "title": "Vel iusto consequatur nam vel et ut labore.",
+    "userId": 0
+  }
+]</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-albums-1-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-albums-1-POST" href="#collapse-albums-1-POST">POST /albums/1</a></h4></div><div id="collapse-albums-1-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-albums-1-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiSW1lbGRhLkdpYnNvbjU1QHdvbG94LmNvbS5hciIsImlhdCI6MTUzNzQ3NDE4OCwiZXhwIjoxNTM3NDc0MjE4fQ.aZzIVQETWxSUpYTRpdMBBR7TkiP88rWA_vEDUpOdtQo"
+}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 201</h5><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiSW1lbGRhLkdpYnNvbjU1QHdvbG94LmNvbS5hciIsImlhdCI6MTUzNzQ3NDE4OCwiZXhwIjoxNTM3NDc0MjE4fQ.aZzIVQETWxSUpYTRpdMBBR7TkiP88rWA_vEDUpOdtQo"
+}</pre><h5>Body</h5><pre>{
+  "id": 1,
+  "albumId": 1,
+  "buyerId": 1,
+  "title": "Veniam magni dolore explicabo odit voluptatibus et optio facilis quo.",
+  "updatedAt": "2018-09-20T20:09:48.376Z",
+  "createdAt": "2018-09-20T20:09:48.376Z",
+  "deletedAt": null
+}</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-albums-1-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-albums-1-POST" href="#collapse-albums-1-POST">POST /albums/1</a></h4></div><div id="collapse-albums-1-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-albums-1-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiRWRuYTE1QHdvbG94LmNvbS5hciIsImlhdCI6MTUzNzQ3NDE4OCwiZXhwIjoxNTM3NDc0MjE4fQ.OwuO5p1me0d_q30liNGOfKdKrvi3mjEjDuqe79iAzrk"
+}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 201</h5><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiRWRuYTE1QHdvbG94LmNvbS5hciIsImlhdCI6MTUzNzQ3NDE4OCwiZXhwIjoxNTM3NDc0MjE4fQ.OwuO5p1me0d_q30liNGOfKdKrvi3mjEjDuqe79iAzrk"
+}</pre><h5>Body</h5><pre>{
+  "id": 1,
+  "albumId": 1,
+  "buyerId": 1,
+  "title": "Quis earum deserunt ut.",
+  "updatedAt": "2018-09-20T20:09:48.448Z",
+  "createdAt": "2018-09-20T20:09:48.448Z",
+  "deletedAt": null
+}</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-albums-79681-photos-GET"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-albums-79681-photos-GET" href="#collapse-albums-79681-photos-GET">GET /albums/79681/photos</a></h4></div><div id="collapse-albums-79681-photos-GET" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-albums-79681-photos-GET"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiQmlsbDU0QHdvbG94LmNvbS5hciIsImlhdCI6MTUzNzQ3NDE4OCwiZXhwIjoxNTM3NDc0MjE4fQ.xmG0avt6dClqowJFXgBhLhDCKwtZ6Q2PqdDxiEdjevo"
+}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiQmlsbDU0QHdvbG94LmNvbS5hciIsImlhdCI6MTUzNzQ3NDE4OCwiZXhwIjoxNTM3NDc0MjE4fQ.xmG0avt6dClqowJFXgBhLhDCKwtZ6Q2PqdDxiEdjevo"
+}</pre><h5>Body</h5><pre>[
+  {
     "id": 1,
-    "title": "quidem molestiae enim"
+    "title": "Ut repudiandae neque.",
+    "albumId": 49,
+    "url": "http://muriel.com",
+    "thumbnailUrl": "https://ramiro.org"
   },
   {
-    "userId": 1,
     "id": 2,
-    "title": "sunt qui excepturi placeat culpa"
+    "title": "Id nisi itaque aspernatur voluptatum quasi perspiciatis quae quia laborum.",
+    "albumId": 55,
+    "url": "http://nia.info",
+    "thumbnailUrl": "https://nyah.biz"
   },
   {
-    "userId": 1,
     "id": 3,
-    "title": "omnis laborum odio"
+    "title": "Asperiores id omnis.",
+    "albumId": 37,
+    "url": "https://lacey.biz",
+    "thumbnailUrl": "http://kyle.name"
   }
 ]</pre></div></div></div></div></div></body></html>
