@@ -1,18 +1,59 @@
 'use strict';
 
-const albumService = require('../services/albums'),
-  logger = require('../logger'),
-  errors = require('../errors');
+const albumService = require('../services/albumPurchases'),
+  errors = require('../errors'),
+  logger = require('../logger');
 
-exports.getAll = (req, res, next) => {
+const userBoughtAlbum = (user, albumId) =>
+  user.getAlbumPurchases({ where: { albumId } }).then(([found]) => found);
+
+const fetchAll = (req, res, next) => {
   albumService
-    .getAll()
+    .fetchAll()
     .then(data => {
       logger.info('Data fetched from external api succesfully!');
       res.status(200).send(data);
     })
-    .catch(err => {
-      logger.error(err);
-      next(errors.defaultError('Cannot access external API'));
-    });
+    .catch(next);
+};
+
+const purchaseAlbum = (req, res, next) => {
+  const { albumId } = req.params,
+    user = req.user;
+
+  userBoughtAlbum(user, albumId)
+    .then(found => {
+      if (!found) {
+        albumService
+          .fetchAndCreate({ albumId, buyerId: user.id })
+          .then(albumPurchase => res.status(201).send(albumPurchase))
+          .catch(next);
+      } else {
+        res.status(200).send({ message: `User '${user.email}' already purchases album #${albumId}` });
+      }
+    })
+    .catch(next);
+};
+
+const listPurchasedAlbumPhotos = (req, res, next) => {
+  const { albumId } = req.params,
+    user = req.user;
+  userBoughtAlbum(user, albumId)
+    .then(found => {
+      if (found) {
+        albumService
+          .fetchPhotosById(albumId)
+          .then(photos => res.status(200).send(photos))
+          .catch(next);
+      } else {
+        next(errors.notPermissionsError(`User '${user.email}' has not permissions`));
+      }
+    })
+    .catch(next);
+};
+
+module.exports = {
+  fetchAll,
+  purchaseAlbum,
+  listPurchasedAlbumPhotos
 };

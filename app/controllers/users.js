@@ -1,10 +1,10 @@
 'use strict';
 
 const bcrypt = require('bcryptjs'),
-  logger = require('../logger'),
   userService = require('../services/users'),
   sessionManager = require('../services/sessionManager'),
   secretGenerator = require('../services/secretGenerator'),
+  logger = require('../logger'),
   errors = require('../errors'),
   config = require('../../config').common.session;
 
@@ -99,10 +99,26 @@ const invalidateAllTokens = (req, res, next) => {
   res.status(200).send({ message: 'All tokens were invalidated' });
 };
 
+const listAlbums = (req, res, next) => {
+  const { userId } = req.params;
+
+  userService
+    .find({ id: userId })
+    .then(user => {
+      if (user) {
+        user.getAlbumPurchases().then(albums => res.status(200).send(albums));
+      } else {
+        next(errors.notFound(`User #${userId} not found`));
+      }
+    })
+    .catch(next);
+};
+
 module.exports = {
   getUsers,
   create,
   createAdmin,
   signin,
-  invalidateAllTokens
+  invalidateAllTokens,
+  listAlbums
 };

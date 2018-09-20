@@ -1,20 +1,21 @@
 const sessionManager = require('../../app/services/sessionManager'),
-  factory = require('../factories/users');
+  userFactory = require('../factories/users'),
+  albumPurchaseFactory = require('../factories/albumPurchases');
 
 const createAdminAndAuth = (options = {}) =>
-  factory.create(Object.assign(options, { isAdmin: true })).then(admin => ({
+  userFactory.create(Object.assign(options, { isAdmin: true })).then(admin => ({
     admin,
     authorization: sessionManager.encode(admin.email)
   }));
 
 const createUserAndAuth = (options = {}) =>
-  factory.create(options).then(user => ({
+  userFactory.create(options).then(user => ({
     user,
     authorization: sessionManager.encode(user.email)
   }));
 
 const createUserAndAuthExpired = (options = {}) =>
-  factory.create(options).then(user => ({
+  userFactory.create(options).then(user => ({
     user,
     authorization: sessionManager.encode(user.email, '-1h')
   }));
@@ -26,7 +27,7 @@ const authNonExistingUser = () => ({
 const createManyUsersAndAuth = (totalRows = Math.floor(Math.random() * 100) + 1) => {
   const promises = [];
   for (let index = 0; index < totalRows; index++) {
-    promises.push(factory.create());
+    promises.push(userFactory.create());
   }
 
   return Promise.all(promises).then(users => ({
@@ -36,13 +37,31 @@ const createManyUsersAndAuth = (totalRows = Math.floor(Math.random() * 100) + 1)
   }));
 };
 
+const buyAlbumAsUser = () =>
+  createUserAndAuth().then(({ user, authorization }) =>
+    albumPurchaseFactory.create({ buyerId: user.id }).then(albumPurchase => ({
+      user,
+      authorization,
+      albumPurchase
+    }))
+  );
+
+const buyAlbumAsAdmin = () =>
+  createAdminAndAuth().then(({ admin, authorization }) =>
+    albumPurchaseFactory.create({ buyerId: admin.id }).then(albumPurchase => ({
+      admin,
+      authorization,
+      albumPurchase
+    }))
+  );
+
 const fakes = {
   user: (params = {}) =>
     Object.assign(
       {
-        firstName: 'Anna',
-        lastName: 'Rose',
-        email: 'anna.rose@wolox.com.ar',
+        firstName: 'Joe',
+        lastName: 'Doe',
+        email: 'joe.doe@wolox.com.ar',
         password: 'password1234'
       },
       params
@@ -50,7 +69,7 @@ const fakes = {
   session: (params = {}) =>
     Object.assign(
       {
-        email: 'anna.rose@wolox.com.ar',
+        email: 'joe.doe@wolox.com.ar',
         password: 'password1234'
       },
       params
@@ -58,10 +77,12 @@ const fakes = {
 };
 
 module.exports = {
+  authNonExistingUser,
+  buyAlbumAsAdmin,
+  buyAlbumAsUser,
   createAdminAndAuth,
   createUserAndAuth,
   createUserAndAuthExpired,
-  authNonExistingUser,
   createManyUsersAndAuth,
   fakes
 };

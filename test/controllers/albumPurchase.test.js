@@ -36,7 +36,7 @@ describe('Album Purchases', () => {
           res.should.have.status(401);
           res.should.be.json;
 
-          res.body.message.should.be.equal('No authorization provided'); // TODO
+          res.body.message.should.be.equal('No authorization provided');
           done();
         })
         .catch(err => done(err));
@@ -50,16 +50,305 @@ describe('Album Purchases', () => {
           .set(sessionManager.HEADER_NAME, authorization)
           .send()
           .then(res => {
-            res.should.have.status(500);
+            res.should.have.status(503);
             res.should.be.json;
             res.body.should.have.property('message');
             res.body.should.have.property('internal_code');
 
-            res.body.message.should.be.equal('Cannot access external API');
+            res.body.message.should.be.equal('Error consulting external API');
             done();
           })
           .catch(err => done(err))
       );
+    });
+  });
+
+  describe('POST /albums/:id', () => {
+    it('Given a default user that have not bought the album yet should be successful', done => {
+      const id = 1;
+      albumPurchasesHelpers.mockShowToSuccess(id);
+
+      usersHelpers.createUserAndAuth().then(({ authorization }) =>
+        chai
+          .request(server)
+          .post(`/albums/${id}`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(201);
+            res.should.be.json;
+            res.body.should.have.property('id');
+            res.body.should.have.property('albumId');
+            res.body.should.have.property('buyerId');
+            res.body.should.have.property('title');
+
+            dictum.chai(res);
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given a default user that already bought the album should be unsuccessful', done => {
+      const id = 1;
+      albumPurchasesHelpers.mockShowToSuccess(id);
+
+      usersHelpers.createUserAndAuth().then(({ user, authorization }) =>
+        chai
+          .request(server)
+          .post(`/albums/${id}`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(() =>
+            chai
+              .request(server)
+              .post(`/albums/${id}`)
+              .set(sessionManager.HEADER_NAME, authorization)
+              .send()
+              .then(res => {
+                res.should.have.status(200);
+                res.should.be.json;
+
+                res.body.message.should.be.equal(`User '${user.email}' already purchases album #${id}`);
+                done();
+              })
+          )
+          .catch(err => done(err))
+      );
+    });
+    it('Given an admin user that have not bought the album yet should be successful', done => {
+      const id = 1;
+      albumPurchasesHelpers.mockShowToSuccess(id);
+
+      usersHelpers.createAdminAndAuth().then(({ authorization }) =>
+        chai
+          .request(server)
+          .post(`/albums/${id}`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(201);
+            res.should.be.json;
+            res.body.should.have.property('id');
+            res.body.should.have.property('albumId');
+            res.body.should.have.property('buyerId');
+            res.body.should.have.property('title');
+
+            dictum.chai(res);
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given an admin user that already bought the album should be unsuccessful', done => {
+      const id = 1;
+      albumPurchasesHelpers.mockShowToSuccess(id);
+
+      usersHelpers.createAdminAndAuth().then(({ admin, authorization }) =>
+        chai
+          .request(server)
+          .post(`/albums/${id}`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(() =>
+            chai
+              .request(server)
+              .post(`/albums/${id}`)
+              .set(sessionManager.HEADER_NAME, authorization)
+              .send()
+              .then(res => {
+                res.should.have.status(200);
+                res.should.be.json;
+
+                res.body.message.should.be.equal(`User '${admin.email}' already purchases album #${id}`);
+                done();
+              })
+          )
+          .catch(err => done(err))
+      );
+    });
+    it('Given a non-authenticated user should be unsuccessful', done => {
+      chai
+        .request(server)
+        .post(`/albums/1`)
+        .send()
+        .then(res => {
+          res.should.have.status(401);
+          res.should.be.json;
+          res.body.should.have.property('message');
+          res.body.should.have.property('internal_code');
+
+          res.body.message.should.be.equal('No authorization provided');
+          done();
+        })
+        .catch(err => done(err));
+    });
+    it('Given a non-existing album id', done => {
+      const id = 1;
+      albumPurchasesHelpers.mockShowToNotFound(id);
+
+      usersHelpers.createUserAndAuth().then(({ authorization }) =>
+        chai
+          .request(server)
+          .post(`/albums/${id}`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(404);
+            res.should.be.json;
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+
+            res.body.message.should.be.equal(`Resource album ${id} not found`);
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given a no-valid album id', done => {
+      const id = 'not_valid';
+      albumPurchasesHelpers.mockShowToSuccess(id);
+
+      usersHelpers.createUserAndAuth().then(({ authorization }) =>
+        chai
+          .request(server)
+          .post(`/albums/${id}`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+
+            res.body.message[0].message.should.be.equal('"albumId" must be a number');
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given an external API error system should handle it', done => {
+      const id = 1;
+      albumPurchasesHelpers.mockShowToFail(id);
+
+      usersHelpers.createUserAndAuth().then(({ authorization }) =>
+        chai
+          .request(server)
+          .post(`/albums/${id}`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(503);
+            res.should.be.json;
+
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+
+            res.body.message.should.be.equal('Error consulting external API');
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+  });
+  describe('GET /users/:userId/albums/:albumId/photos', () => {
+    it('Given a default user that already bought album should be successful', done => {
+      usersHelpers.buyAlbumAsUser().then(({ user, authorization, albumPurchase }) => {
+        albumPurchasesHelpers.mockPhotosToSuccess(albumPurchase.albumId);
+        return chai
+          .request(server)
+          .get(`/users/${user.id}/albums/${albumPurchase.albumId}/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.instanceOf(Array);
+
+            dictum.chai(res);
+            done();
+          })
+          .catch(err => done(err));
+      });
+    });
+    it('Given an user that did not bought the album yet should be unsuccessful', done => {
+      usersHelpers.createUserAndAuth().then(({ user, authorization }) => {
+        albumPurchasesHelpers.mockPhotosToSuccess(1);
+        return chai
+          .request(server)
+          .get(`/users/${user.id}/albums/1/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(403);
+            res.should.be.json;
+
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+
+            res.body.message.should.be.equal(`User '${user.email}' has not permissions`);
+            done();
+          })
+          .catch(err => done(err));
+      });
+    });
+    it('Given a no-valid album id', done => {
+      const id = 'non-valid';
+      usersHelpers.createUserAndAuth().then(({ user, authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/${user.id}/albums/${id}/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+
+            res.body.message[0].message.should.be.equal('"albumId" must be a number');
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given a non-authenticated user should be unsuccessful', done => {
+      const id = 1;
+      usersHelpers.createUserAndAuth().then(({ user }) =>
+        chai
+          .request(server)
+          .get(`/users/${user.id}/albums/${id}/photos`)
+          .send()
+          .then(res => {
+            res.should.have.status(401);
+            res.should.be.json;
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+
+            res.body.message.should.be.equal('No authorization provided');
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given an external API error system should handle it', done => {
+      usersHelpers.buyAlbumAsUser().then(({ user, authorization, albumPurchase }) => {
+        albumPurchasesHelpers.mockPhotosToFail(albumPurchase.albumId);
+        return chai
+          .request(server)
+          .get(`/users/${user.id}/albums/${albumPurchase.albumId}/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(503);
+            res.should.be.json;
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+
+            res.body.message.should.be.equal('Error consulting external API');
+            done();
+          })
+          .catch(err => done(err));
+      });
     });
   });
 });
