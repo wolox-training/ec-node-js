@@ -4,11 +4,11 @@
   "description": "",
   "engines": {
     "node": "8.9.4",
-    "npm": "2.14.2"
+    "npm": "6.1.0"
   },
   "scripts": {
     "console": "node console.js",
-    "cover": "NODE_ENV=testing istanbul cover ./node_modules/mocha/bin/_mocha --compilers js:babel-core/register test/app.js",
+    "cover": "NODE_ENV=testing istanbul cover ./node_modules/mocha/bin/_mocha test/app.js",
     "coveralls": "npm run cover -- --report lcovonly && cat ./coverage/lcov.info | coveralls",
     "eslint-check": "eslint --print-config .eslintrc.js | eslint-config-prettier-check",
     "lint": "./node_modules/eslint/bin/eslint.js \"**/*.js\"",
@@ -20,8 +20,8 @@
     "prestart": "npm run lint",
     "migrations": "./node_modules/.bin/sequelize db:migrate",
     "start": "./node_modules/.bin/nodemon --inspect app.js",
-    "test": "NODE_ENV=testing ./node_modules/mocha/bin/_mocha --timeout 6000 --exit --compilers js:babel-core/register test/app.js && npm run nsp",
-    "test-inspect": "NODE_ENV=testing node --inspect --debug-brk ./node_modules/mocha/bin/_mocha --compilers js:babel-core/register test/app.js"
+    "test": "NODE_ENV=testing npm run migrations && NODE_ENV=testing ./node_modules/mocha/bin/_mocha --timeout 6000 --exit test/app.js",
+    "test-inspect": "NODE_ENV=testing node --inspect --debug-brk ./node_modules/mocha/bin/_mocha test/app.js"
   },
   "cacheDirectories": [
     "node_modules"
@@ -38,10 +38,12 @@
     "url": "https://github.com/Wolox/training-node/issues"
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "jwt-simple": "^0.5.1",
+    "joi": "^13.6.0",
+    "jsonwebtoken": "^8.3.0",
     "morgan": "^1.9.0",
     "pg": "^7.4.1",
     "pg-native": "^2.2.0",
@@ -66,14 +68,17 @@
     "eslint-config-prettier": "^2.3.1",
     "eslint-plugin-import": "^2.6.1",
     "eslint-plugin-prettier": "^2.1.1",
+    "faker": "^4.1.0",
     "husky": "^0.14.3",
     "istanbul": "^0.4.3",
     "mocha": "^5.0.1",
     "mocha-lcov-reporter": "^1.2.0",
+    "nock": "^9.6.1",
     "nodemon": "^1.18.3",
     "prettier": "^1.8.2",
     "prettier-eslint": "^8.2.1",
     "prompt": "^1.0.0",
+    "scenify": "^0.1.5",
     "sequelize-cli": "^4.0.0"
   }
 }

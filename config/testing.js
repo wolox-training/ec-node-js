@@ -3,10 +3,10 @@ exports.config = {
   isTesting: true,
   common: {
     database: {
-      name: process.env.NODE_API_DB_NAME_TEST
+      name: process.env.DB_NAME_TEST
     },
     session: {
-      secret: 'some-super-secret'
+      expirationTime: process.env.NODE_API_SESSION_EXP_TIME_TEST
     }
   }
 };
