@@ -5,8 +5,10 @@ const DEFAULT_STATUS_CODE = 500;
 
 const statusCodes = {
   [errors.DATABASE_ERROR]: 503,
+  [errors.EXTERNAL_API_ERROR]: 503,
   [errors.DEFAULT_ERROR]: 500,
   [errors.USER_ALREADY_EXIST]: 409,
+  [errors.NOT_FOUND]: 404,
   [errors.NOT_PERMISSIONS_ERROR]: 403,
   [errors.UNAUTHORIZED_USER_ERROR]: 401,
   [errors.INVALID_USER_ERROR]: 400,
