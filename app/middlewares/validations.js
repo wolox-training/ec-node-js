@@ -54,9 +54,19 @@ const pagination = validate(
   })
 );
 
+const params = validate(
+  'params',
+  Joi.object({
+    id: Joi.number().integer(),
+    userId: Joi.number().integer(),
+    albumId: Joi.number().integer()
+  })
+);
+
 module.exports = {
   createUser,
   createAdmin,
   signin,
-  pagination
+  pagination,
+  params
 };
