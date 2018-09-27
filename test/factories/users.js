@@ -1,7 +1,6 @@
 'use strict';
 
 const faker = require('faker'),
-  bcrypt = require('bcryptjs'),
   User = require('../../app/models').user;
 
 const data = (props = {}) =>

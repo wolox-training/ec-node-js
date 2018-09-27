@@ -1,32 +1,33 @@
 const sessionManager = require('../../app/services/sessionManager'),
-  factory = require('../factories/users');
+  userFactory = require('../factories/users'),
+  albumPurchaseFactory = require('../factories/albumPurchases');
 
-const createAdminAndAuth = (options = {}) =>
-  factory.create(Object.assign(options, { isAdmin: true })).then(admin => ({
+exports.createAdminAndAuth = (options = {}) =>
+  userFactory.create(Object.assign(options, { isAdmin: true })).then(admin => ({
     admin,
     authorization: sessionManager.encode(admin.email)
   }));
 
-const createUserAndAuth = (options = {}) =>
-  factory.create(options).then(user => ({
+exports.createUserAndAuth = (options = {}) =>
+  userFactory.create(Object.assign(options)).then(user => ({
     user,
     authorization: sessionManager.encode(user.email)
   }));
 
-const createUserAndAuthExpired = (options = {}) =>
-  factory.create(options).then(user => ({
+exports.createUserAndAuthExpired = (options = {}) =>
+  userFactory.create(options).then(user => ({
     user,
     authorization: sessionManager.encode(user.email, '-1h')
   }));
 
-const authNonExistingUser = () => ({
+exports.authNonExistingUser = () => ({
   authorization: sessionManager.encode('user.deleted@wolox.com.ar')
 });
 
-const createManyUsersAndAuth = (totalRows = Math.floor(Math.random() * 100) + 1) => {
+exports.createManyUsersAndAuth = (totalRows = Math.floor(Math.random() * 100) + 1) => {
   const promises = [];
   for (let index = 0; index < totalRows; index++) {
-    promises.push(factory.create());
+    promises.push(userFactory.create());
   }
 
   return Promise.all(promises).then(users => ({
@@ -36,7 +37,24 @@ const createManyUsersAndAuth = (totalRows = Math.floor(Math.random() * 100) + 1)
   }));
 };
 
-const fakes = {
+exports.buyAlbumAsUser = () =>
+  exports.createUserAndAuth().then(({ user, authorization }) =>
+    albumPurchaseFactory.create({ buyerId: user.id }).then(albumPurchase => ({
+      user,
+      authorization,
+      albumPurchase
+    }))
+  );
+exports.buyAlbumAsAdmin = () =>
+  exports.createAdminAndAuth().then(({ admin, authorization }) =>
+    albumPurchaseFactory.create({ buyerId: admin.id }).then(albumPurchase => ({
+      admin,
+      authorization,
+      albumPurchase
+    }))
+  );
+
+exports.fakes = {
   user: (params = {}) =>
     Object.assign(
       {
@@ -55,13 +73,4 @@ const fakes = {
       },
       params
     )
-};
-
-module.exports = {
-  createAdminAndAuth,
-  createUserAndAuth,
-  createUserAndAuthExpired,
-  authNonExistingUser,
-  createManyUsersAndAuth,
-  fakes
 };
