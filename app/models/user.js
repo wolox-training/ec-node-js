@@ -31,8 +31,10 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true
     }
   );
-  User.associate = function(models) {
-    // associations can be defined here
+
+  User.associate = ({ albumPurchase }) => {
+    User.hasMany(albumPurchase, { foreignKey: 'buyerId', onDelete: 'cascade' });
   };
+
   return User;
 };
