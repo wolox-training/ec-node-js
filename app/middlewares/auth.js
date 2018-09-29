@@ -22,12 +22,3 @@ exports.authenticate = (req, res, next) => {
     next(errors.unauthorizedUserError('No authorization provided'));
   }
 };
-
-exports.isAdmin = (req, res, next) => {
-  const user = req.user;
-  if (user.isAdmin) {
-    next();
-  } else {
-    next(errors.notPermissionsError(`User '${user.email}' is not Admin`));
-  }
-};
