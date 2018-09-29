@@ -1,21 +1,45 @@
 <html><head><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" /><script src="https://code.jquery.com/jquery-1.12.2.min.js"></script><script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script><style> pre { width: 95%; } </style></head><body><div class="container"><div class="jumbotron"><h1>Albums</h1></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-albums-GET"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-albums-GET" href="#collapse-albums-GET">GET /albums</a></h4></div><div id="collapse-albums-GET" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-albums-GET"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
-  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiQmVudG9uX0F1ZXJAd29sb3guY29tLmFyIiwiaWF0IjoxNTM3MjkwNzUxLCJleHAiOjE1MzcyOTQzNTF9.Toj5janN5sp2OwxGbDvXFUdWEHLcmRQs7zo0BVCtovE"
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiQ29sbGluLk1vbmFoYW4xMkB3b2xveC5jb20uYXIiLCJpYXQiOjE1MzgwNTg1OTIsImV4cCI6MTUzODA1ODYyMn0.4XfMCE0ru_aI75Jejx9O9v81oVPczgBBMG_4x-m6j7Y"
 }</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 200</h5><h5>Headers</h5><pre>{
-  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiQmVudG9uX0F1ZXJAd29sb3guY29tLmFyIiwiaWF0IjoxNTM3MjkwNzUxLCJleHAiOjE1MzcyOTQzNTF9.Toj5janN5sp2OwxGbDvXFUdWEHLcmRQs7zo0BVCtovE"
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiQ29sbGluLk1vbmFoYW4xMkB3b2xveC5jb20uYXIiLCJpYXQiOjE1MzgwNTg1OTIsImV4cCI6MTUzODA1ODYyMn0.4XfMCE0ru_aI75Jejx9O9v81oVPczgBBMG_4x-m6j7Y"
 }</pre><h5>Body</h5><pre>[
   {
-    "userId": 1,
-    "id": 1,
-    "title": "quidem molestiae enim"
+    "albumId": 1,
+    "title": "Qui optio dolor consequatur nam necessitatibus delectus provident est.",
+    "userId": 0
   },
   {
-    "userId": 1,
-    "id": 2,
-    "title": "sunt qui excepturi placeat culpa"
+    "albumId": 2,
+    "title": "Aut aspernatur nihil cupiditate quod aut.",
+    "userId": 2
   },
   {
-    "userId": 1,
-    "id": 3,
-    "title": "omnis laborum odio"
+    "albumId": 3,
+    "title": "Laborum est et eos ut.",
+    "userId": 1
   }
-]</pre></div></div></div></div></div></body></html>
+]</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-albums-1-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-albums-1-POST" href="#collapse-albums-1-POST">POST /albums/1</a></h4></div><div id="collapse-albums-1-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-albums-1-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiRWxvaXNlX0ZsYXRsZXk3OEB3b2xveC5jb20uYXIiLCJpYXQiOjE1MzgwNTg1OTIsImV4cCI6MTUzODA1ODYyMn0.P7qQ26Am9Jypb91cKDyoCkzE7-_ozLbc0voTMgzjHFM"
+}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 201</h5><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiRWxvaXNlX0ZsYXRsZXk3OEB3b2xveC5jb20uYXIiLCJpYXQiOjE1MzgwNTg1OTIsImV4cCI6MTUzODA1ODYyMn0.P7qQ26Am9Jypb91cKDyoCkzE7-_ozLbc0voTMgzjHFM"
+}</pre><h5>Body</h5><pre>{
+  "id": 1,
+  "albumId": 1,
+  "buyerId": 1,
+  "title": "Aliquam illum facere id tempore ratione reprehenderit et dolores distinctio.",
+  "updatedAt": "2018-09-27T14:29:52.663Z",
+  "createdAt": "2018-09-27T14:29:52.663Z",
+  "deletedAt": null
+}</pre></div></div></div></div><div class="panel panel-default"><div class="panel-heading" role="tab" id="heading-albums-1-POST"><h4 class="panel-title"><a role="button" data-toggle="collapse" data-parent="#accordion" aria-expanded="true" aria-controls="collapse-albums-1-POST" href="#collapse-albums-1-POST">POST /albums/1</a></h4></div><div id="collapse-albums-1-POST" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-albums-1-POST"><div class="panel-body"><h4>Request Data</h4><div class="container"><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiQmFydG9uX01pbGxzNzBAd29sb3guY29tLmFyIiwiaWF0IjoxNTM4MDU4NTkyLCJleHAiOjE1MzgwNTg2MjJ9.YaLKaZB6y4HhUoJ8OoIEF1ZwDWCf-ce7crbjSqoFro0"
+}</pre></div></div><div class="panel-body"><h4>Response Data</h4><div class="container"><h5>Status: 201</h5><h5>Headers</h5><pre>{
+  "authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoiQmFydG9uX01pbGxzNzBAd29sb3guY29tLmFyIiwiaWF0IjoxNTM4MDU4NTkyLCJleHAiOjE1MzgwNTg2MjJ9.YaLKaZB6y4HhUoJ8OoIEF1ZwDWCf-ce7crbjSqoFro0"
+}</pre><h5>Body</h5><pre>{
+  "id": 1,
+  "albumId": 1,
+  "buyerId": 1,
+  "title": "Suscipit labore consectetur et rerum sed aut qui quisquam voluptatibus.",
+  "updatedAt": "2018-09-27T14:29:52.762Z",
+  "createdAt": "2018-09-27T14:29:52.762Z",
+  "deletedAt": null
+}</pre></div></div></div></div></div></body></html>
