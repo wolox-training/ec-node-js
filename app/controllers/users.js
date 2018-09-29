@@ -99,10 +99,25 @@ const invalidateAllTokens = (req, res, next) => {
   res.status(200).send({ message: 'All tokens were invalidated' });
 };
 
+const listAlbums = (req, res, next) => {
+  const { userId } = req.params;
+  userService
+    .find({ id: userId })
+    .then(user => {
+      if (user) {
+        user.getAlbumPurchases().then(albums => res.status(200).send(albums));
+      } else {
+        next(errors.notFound(`User #${userId} not found`));
+      }
+    })
+    .catch(next);
+};
+
 module.exports = {
   getUsers,
   create,
   createAdmin,
   signin,
-  invalidateAllTokens
+  invalidateAllTokens,
+  listAlbums
 };
