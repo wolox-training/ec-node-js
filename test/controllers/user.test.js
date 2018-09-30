@@ -679,10 +679,11 @@ describe('Users', () => {
           .catch(err => done(err))
       );
     });
-    it('ONLY Given an external API error system should handle it', done => {
-      usersHelpers.buyAlbumAsUser().then(({ albumPurchase, user, authorization }) => {
-        albumPurchasesHelpers.mockPhotosToFail(albumPurchase.albumId);
-        return chai
+    it('Given an external API error system should handle it', done => {
+      const id = 1;
+      albumPurchasesHelpers.mockPhotosToFail(id);
+      usersHelpers.buyAlbumAsUser().then(({ albumPurchase, user, authorization }) =>
+        chai
           .request(server)
           .get(`/users/${user.id}/albums/${albumPurchase.albumId}/photos`)
           .set(sessionManager.HEADER_NAME, authorization)
@@ -695,8 +696,8 @@ describe('Users', () => {
             res.body.message.should.be.equal('Error consulting external API');
             done();
           })
-          .catch(err => done(err));
-      });
+          .catch(err => done(err))
+      );
     });
   });
 });
