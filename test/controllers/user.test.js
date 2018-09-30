@@ -4,6 +4,7 @@ const chai = require('chai'),
   userService = require('../../app/services/users'),
   server = require('../../app'),
   usersHelpers = require('../helpers/users'),
+  albumPurchasesHelpers = require('../helpers/albumPurchases'),
   should = chai.should();
 
 describe('Users', () => {
@@ -522,6 +523,180 @@ describe('Users', () => {
           })
           .catch(err => done(err))
       );
+    });
+  });
+  describe('GET /users/:user_id/albums/:album_id/photos', () => {
+    it('Given an admin user should see its album photos', done => {
+      usersHelpers.buyAlbumAsAdmin().then(({ admin, albumPurchase, authorization }) => {
+        albumPurchasesHelpers.mockPhotosToSuccess(albumPurchase.albumId);
+        return chai
+          .request(server)
+          .get(`/users/${admin.id}/albums/${albumPurchase.albumId}/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.instanceOf(Array);
+            dictum.chai(res);
+            done();
+          })
+          .catch(err => done(err));
+      });
+    });
+    it('Given an admin user should not see album photos he has not purchased', done => {
+      usersHelpers.createAdminAndAuth().then(({ admin, authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/${admin.id}/albums/10/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(403);
+            res.should.be.json;
+            res.body.message.should.be.equal(`User '${admin.email}' has not permissions`);
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given an admin user should not see album photos from other user', done => {
+      usersHelpers.buyAlbumAsUser().then(({ user, albumPurchase }) =>
+        usersHelpers.createAdminAndAuth().then(({ admin, authorization }) => {
+          albumPurchasesHelpers.mockPhotosToSuccess(albumPurchase.albumId);
+          return chai
+            .request(server)
+            .get(`/users/${user.id}/albums/${albumPurchase.albumId}/photos`)
+            .set(sessionManager.HEADER_NAME, authorization)
+            .send()
+            .then(res => {
+              res.should.have.status(403);
+              res.should.be.json;
+              res.body.message.should.be.equal(`User '${admin.email}' has not permissions`);
+              done();
+            })
+            .catch(err => done(err));
+        })
+      );
+    });
+    it('Given an default user should see all its album photos', done => {
+      usersHelpers.buyAlbumAsUser().then(({ user, albumPurchase, authorization }) => {
+        albumPurchasesHelpers.mockPhotosToSuccess(albumPurchase.albumId);
+        return chai
+          .request(server)
+          .get(`/users/${user.id}/albums/${albumPurchase.albumId}/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.instanceOf(Array);
+            dictum.chai(res);
+            done();
+          })
+          .catch(err => done(err));
+      });
+    });
+    it('Given an default user should not see album photos he has not purchased', done => {
+      usersHelpers.createUserAndAuth().then(({ user, authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/${user.id}/albums/10/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(403);
+            res.should.be.json;
+            res.body.message.should.be.equal(`User '${user.email}' has not permissions`);
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given an default user should not see album photos from other user', done => {
+      usersHelpers.buyAlbumAsAdmin().then(({ admin, albumPurchase }) =>
+        usersHelpers.createUserAndAuth().then(({ user, authorization }) => {
+          albumPurchasesHelpers.mockPhotosToSuccess(albumPurchase.albumId);
+          return chai
+            .request(server)
+            .get(`/users/${admin.id}/albums/${albumPurchase.albumId}/photos`)
+            .set(sessionManager.HEADER_NAME, authorization)
+            .send()
+            .then(res => {
+              res.should.have.status(403);
+              res.should.be.json;
+              res.body.message.should.be.equal(`User '${user.email}' has not permissions`);
+              done();
+            })
+            .catch(err => done(err));
+        })
+      );
+    });
+    it('Given a non-authenticated request should throw error', done => {
+      chai
+        .request(server)
+        .get(`/users/1/albums/1/photos`)
+        .send()
+        .then(res => {
+          res.should.have.status(401);
+          res.should.be.json;
+          res.body.message.should.be.equal(`No authorization provided`);
+          done();
+        })
+        .catch(err => done(err));
+    });
+    it('Given a non-valid user id should throw error', done => {
+      const id = 'non_valid';
+      usersHelpers.createUserAndAuth().then(({ authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/${id}/albums/1/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.message[0].message.should.be.equal('"userId" must be a number');
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('Given a non-valid album id should throw error', done => {
+      const id = 'non_valid';
+      usersHelpers.createUserAndAuth().then(({ authorization }) =>
+        chai
+          .request(server)
+          .get(`/users/1/albums/${id}/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(400);
+            res.should.be.json;
+            res.body.message[0].message.should.be.equal('"albumId" must be a number');
+            done();
+          })
+          .catch(err => done(err))
+      );
+    });
+    it('ONLY Given an external API error system should handle it', done => {
+      usersHelpers.buyAlbumAsUser().then(({ albumPurchase, user, authorization }) => {
+        albumPurchasesHelpers.mockPhotosToFail(albumPurchase.albumId);
+        return chai
+          .request(server)
+          .get(`/users/${user.id}/albums/${albumPurchase.albumId}/photos`)
+          .set(sessionManager.HEADER_NAME, authorization)
+          .send()
+          .then(res => {
+            res.should.have.status(503);
+            res.should.be.json;
+            res.body.should.have.property('message');
+            res.body.should.have.property('internal_code');
+            res.body.message.should.be.equal('Error consulting external API');
+            done();
+          })
+          .catch(err => done(err));
+      });
     });
   });
 });
