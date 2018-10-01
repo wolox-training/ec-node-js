@@ -419,6 +419,15 @@ describe('Users', () => {
             res.should.have.status(200);
             res.should.be.json;
             res.body.should.be.instanceOf(Array);
+
+            res.body[0].should.have.property('id');
+            res.body[0].should.have.property('title');
+            res.body[0].should.have.property('albumId');
+            res.body[0].should.have.property('createdAt');
+            res.body[0].should.have.property('updatedAt');
+            res.body[0].should.have.property('deletedAt');
+            res.body[0].should.have.property('buyerId');
+
             dictum.chai(res);
             done();
           })
@@ -437,6 +446,15 @@ describe('Users', () => {
               res.should.have.status(200);
               res.should.be.json;
               res.body.should.be.instanceOf(Array);
+
+              res.body[0].should.have.property('id');
+              res.body[0].should.have.property('title');
+              res.body[0].should.have.property('albumId');
+              res.body[0].should.have.property('createdAt');
+              res.body[0].should.have.property('updatedAt');
+              res.body[0].should.have.property('deletedAt');
+              res.body[0].should.have.property('buyerId');
+
               done();
             })
             .catch(err => done(err))
@@ -454,6 +472,15 @@ describe('Users', () => {
             res.should.have.status(200);
             res.should.be.json;
             res.body.should.be.instanceOf(Array);
+
+            res.body[0].should.have.property('id');
+            res.body[0].should.have.property('title');
+            res.body[0].should.have.property('albumId');
+            res.body[0].should.have.property('createdAt');
+            res.body[0].should.have.property('updatedAt');
+            res.body[0].should.have.property('deletedAt');
+            res.body[0].should.have.property('buyerId');
+
             done();
           })
           .catch(err => done(err))
@@ -538,6 +565,13 @@ describe('Users', () => {
             res.should.have.status(200);
             res.should.be.json;
             res.body.should.be.instanceOf(Array);
+
+            res.body[0].should.have.property('id');
+            res.body[0].should.have.property('title');
+            res.body[0].should.have.property('albumId');
+            res.body[0].should.have.property('url');
+            res.body[0].should.have.property('thumbnailUrl');
+
             dictum.chai(res);
             done();
           })
@@ -591,6 +625,13 @@ describe('Users', () => {
             res.should.have.status(200);
             res.should.be.json;
             res.body.should.be.instanceOf(Array);
+
+            res.body[0].should.have.property('id');
+            res.body[0].should.have.property('title');
+            res.body[0].should.have.property('albumId');
+            res.body[0].should.have.property('url');
+            res.body[0].should.have.property('thumbnailUrl');
+
             dictum.chai(res);
             done();
           })
