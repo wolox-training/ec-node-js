@@ -55,6 +55,11 @@ exports.mockShowToSuccess = id =>
     .get(`/albums/${id}`)
     .reply(200, exports.fakes.albumsSamples()[id]);
 
+exports.mockPhotosToSuccess = id =>
+  nock(baseURL)
+    .get(`/albums/${id}/photos`)
+    .reply(200, exports.fakes.photosSamples());
+
 exports.mockIndexToFail = () =>
   nock(baseURL)
     .get('/albums')
@@ -69,3 +74,8 @@ exports.mockShowToNotFound = id =>
   nock(baseURL)
     .get(`/albums/${id}`)
     .reply(404, 'Not found');
+
+exports.mockPhotosToFail = id =>
+  nock(baseURL)
+    .get(`/albums/${id}/photos`)
+    .reply(500, 'Something went wrong!');

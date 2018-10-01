@@ -21,6 +21,10 @@ describe('Album Purchases', () => {
             res.should.be.json;
             res.body.should.be.instanceOf(Array);
 
+            res.body[0].should.have.property('albumId');
+            res.body[0].should.have.property('title');
+            res.body[0].should.have.property('userId');
+
             dictum.chai(res);
             done();
           })

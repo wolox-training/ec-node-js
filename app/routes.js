@@ -25,4 +25,9 @@ exports.init = app => {
   );
   app.get('/albums', [auth.authenticate], albumsController.fetchAll);
   app.post('/albums/:albumId', [auth.authenticate, validate.params], albumsController.purchaseAlbum);
+  app.get(
+    '/users/:userId/albums/:albumId/photos',
+    [auth.authenticate, validate.params, accessControl.requireAccessLevel('owner')],
+    albumsController.listPurchasedAlbumPhotos
+  );
 };
