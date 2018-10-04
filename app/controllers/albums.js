@@ -1,7 +1,8 @@
 'use strict';
 
 const albumService = require('../services/albumPurchases'),
-  logger = require('../logger');
+  logger = require('../logger'),
+  errors = require('../errors');
 
 const userBoughtAlbum = (user, albumId) =>
   user.getAlbumPurchases({ where: { albumId } }).then(([found]) => found);
@@ -33,7 +34,28 @@ const purchaseAlbum = (req, res, next) => {
     .catch(next);
 };
 
+const listPurchasedAlbumPhotos = (req, res, next) => {
+  const { albumId } = req.params,
+    user = req.user;
+  userBoughtAlbum(user, albumId)
+    .then(found => {
+      if (found) {
+        albumService
+          .fetchPhotosById(albumId)
+          .then(photos => {
+            logger.info('Data fetched from external api succesfully!');
+            res.status(200).send(photos);
+          })
+          .catch(next);
+      } else {
+        next(errors.notPermissionsError(`User '${user.email}' has not permissions`));
+      }
+    })
+    .catch(next);
+};
+
 module.exports = {
   fetchAll,
-  purchaseAlbum
+  purchaseAlbum,
+  listPurchasedAlbumPhotos
 };

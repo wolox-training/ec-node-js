@@ -5,14 +5,15 @@ const axios = require('axios'),
   logger = require('../logger'),
   errors = require('../errors');
 
-const BASE_URL = 'https://jsonplaceholder.typicode.com';
+exports.BASE_URL = 'https://jsonplaceholder.typicode.com';
+
 const api = axios.create({
-  baseURL: BASE_URL
+  baseURL: exports.BASE_URL
 });
 
 const is404 = err => err.response && err.response.status === 404;
 
-const fetchAll = () =>
+exports.fetchAll = () =>
   api
     .get('/albums')
     .then(({ data }) => data)
@@ -21,7 +22,7 @@ const fetchAll = () =>
       throw errors.externalAPIError();
     });
 
-const fetchById = albumId =>
+exports.fetchById = albumId =>
   api
     .get(`/albums/${albumId}`)
     .then(({ data }) => data)
@@ -30,18 +31,21 @@ const fetchById = albumId =>
       throw is404(err) ? errors.notFound(`Resource album ${albumId} not found`) : errors.externalAPIError();
     });
 
-const create = values =>
+exports.fetchPhotosById = albumId =>
+  api
+    .get(`/albums/${albumId}/photos`)
+    .then(({ data }) => data)
+    .catch(err => {
+      logger.error('ROUTE /albums/:id/photos', err.message);
+      throw is404(err)
+        ? errors.notFound(`Resource photos for album ${albumId} not found`)
+        : errors.externalAPIError();
+    });
+
+exports.create = values =>
   AlbumPurchase.create(values).catch(err => {
     throw errors.databaseError(err.message);
   });
 
-const fetchAndCreate = ({ buyerId, albumId }) =>
-  fetchById(albumId).then(({ title }) => create({ albumId, buyerId, title }));
-
-module.exports = {
-  fetchAndCreate,
-  fetchAll,
-  fetchById,
-  create,
-  BASE_URL
-};
+exports.fetchAndCreate = ({ buyerId, albumId }) =>
+  exports.fetchById(albumId).then(({ title }) => exports.create({ albumId, buyerId, title }));

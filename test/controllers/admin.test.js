@@ -67,7 +67,7 @@ describe('Admin users', () => {
             res.body.should.have.property('message');
             res.body.should.have.property('internal_code');
 
-            res.body.message.should.be.equal(`User '${user.email}' is not Admin`);
+            res.body.message.should.be.equal(`User '${user.email}' has not permissions`);
             done();
           })
           .catch(err => done(err))
