@@ -447,6 +447,8 @@ describe('Users', () => {
               res.should.be.json;
               res.body.should.be.instanceOf(Array);
 
+              res.body.length.should.be.equal(1);
+
               res.body[0].should.have.property('id');
               res.body[0].should.have.property('title');
               res.body[0].should.have.property('albumId');

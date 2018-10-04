@@ -42,7 +42,10 @@ const listPurchasedAlbumPhotos = (req, res, next) => {
       if (found) {
         albumService
           .fetchPhotosById(albumId)
-          .then(photos => res.status(200).send(photos))
+          .then(photos => {
+            logger.info('Data fetched from external api succesfully!');
+            res.status(200).send(photos);
+          })
           .catch(next);
       } else {
         next(errors.notPermissionsError(`User '${user.email}' has not permissions`));
