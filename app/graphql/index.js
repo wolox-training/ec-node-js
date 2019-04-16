@@ -1,13 +1,5 @@
 const expressGraphQL = require('express-graphql');
-const { makeExecutableSchema } = require('graphql-tools');
-
-const typeDefs = require('./schema');
-const resolvers = require('./resolvers');
-
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers
-});
+const schema = require('./schema');
 
 exports.init = expressGraphQL({
   schema,

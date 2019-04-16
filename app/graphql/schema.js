@@ -1,7 +1,19 @@
-const { mergeTypes } = require('merge-graphql-schemas');
-const Album = require('./albums/types');
-const User = require('./users/types');
+const { GraphQLSchema, GraphQLObjectType } = require('graphql');
+const albums = require('./albums');
+const users = require('./users');
 
-const typeDefs = [Album, User];
-
-module.exports = mergeTypes(typeDefs, { all: true });
+module.exports = new GraphQLSchema({
+  query: new GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      ...albums.queries,
+      ...users.queries
+    }
+  }),
+  mutation: new GraphQLObjectType({
+    name: 'Mutation',
+    fields: {
+      ...albums.mutations
+    }
+  })
+});

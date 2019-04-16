@@ -1,20 +1,10 @@
-const AlbumType = `
-  type Album {
-    id: ID!
-    userId: Int!
-    title: String!
-  }
+const { GraphQLID, GraphQLInt, GraphQLString, GraphQLNonNull, GraphQLObjectType } = require('graphql');
 
-  type Query {
-    albums: [Album]!
-    album(id: ID!): Album
+exports.AlbumType = new GraphQLObjectType({
+  name: 'Album',
+  fields: {
+    id: { name: 'id', type: new GraphQLNonNull(GraphQLID) },
+    title: { name: 'title', type: new GraphQLNonNull(GraphQLString) },
+    userId: { name: 'userId', type: new GraphQLNonNull(GraphQLInt) }
   }
-
-  type Mutation {
-    addAlbum(title: String!, userId: Int): Album!
-    editAlbum(id: ID!, title: String, userId: Int): Album!
-    deleteAlbum(id: ID!): Boolean 
-  }
-`;
-
-module.exports = AlbumType;
+});
