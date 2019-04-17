@@ -1,16 +1,16 @@
 const { GraphQLInt, GraphQLID, GraphQLBoolean, GraphQLNonNull, GraphQLString } = require('graphql');
 
 const Album = require('../../services/albums');
-const { AlbumType } = require('./types');
+const { AlbumType, NewAlbumInputType } = require('./types');
 
 exports.addAlbum = {
   description: 'Creates a new album',
   type: new GraphQLNonNull(AlbumType),
   args: {
-    title: { name: 'title', type: new GraphQLNonNull(GraphQLString) },
-    userId: { name: 'userId', type: new GraphQLNonNull(GraphQLInt) }
+    newAlbum: { name: 'newAlbum', type: NewAlbumInputType }
   },
-  resolve: (rootValue, { title, userId }, context, info) => {
+  resolve: (rootValue, { newAlbum }, context, info) => {
+    const { title, userId } = newAlbum;
     return Album.create({ title, userId });
   }
 };
