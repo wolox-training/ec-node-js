@@ -2,6 +2,7 @@ const { GraphQLInt, GraphQLID, GraphQLBoolean, GraphQLNonNull, GraphQLString } =
 
 const Album = require('../../services/albums');
 const { AlbumType, NewAlbumInputType } = require('./types');
+const { handleError } = require('../errors');
 
 exports.addAlbum = {
   description: 'Creates a new album',
@@ -9,9 +10,9 @@ exports.addAlbum = {
   args: {
     newAlbum: { name: 'newAlbum', type: NewAlbumInputType }
   },
-  resolve: (rootValue, { newAlbum }, context, info) => {
+  resolve: (rootValue, { newAlbum }, ctx, info) => {
     const { title, userId } = newAlbum;
-    return Album.create({ title, userId });
+    return Album.create({ title, userId }).catch(handleError(info));
   }
 };
 
@@ -23,8 +24,8 @@ exports.editAlbum = {
     title: { name: 'title', type: GraphQLString },
     userId: { name: 'userId', type: GraphQLInt }
   },
-  resolve: (rootValue, { id, ...args }, context, info) => {
-    return Album.update(id, { ...args });
+  resolve: (rootValue, { id, ...args }, ctx, info) => {
+    return Album.update(id, { ...args }).catch(handleError(info));
   }
 };
 
@@ -34,7 +35,7 @@ exports.deleteAlbum = {
   args: {
     id: { name: 'id', type: new GraphQLNonNull(GraphQLID) }
   },
-  resolve: (rootValue, { id }, context, info) => {
-    return Album.delete(id);
+  resolve: (rootValue, { id }, ctx, info) => {
+    return Album.delete(id).catch(handleError(info));
   }
 };
