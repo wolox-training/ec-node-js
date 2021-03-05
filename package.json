@@ -47,7 +47,7 @@
     "graphql-tools": "^4.0.4",
     "joi": "^13.6.0",
     "jsonwebtoken": "^8.3.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "merge-graphql-schemas": "^1.5.8",
     "morgan": "^1.9.1",
     "pg": "^7.4.1",
