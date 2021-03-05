@@ -1,7 +1,9 @@
-const usersController = require('./controllers/users'),
-  albumsController = require('./controllers/albums'),
-  validate = require('./middlewares/validations'),
-  auth = require('./middlewares/auth');
+const usersController = require('./controllers/users');
+const albumsController = require('./controllers/albums');
+const graphQL = require('./graphql');
+
+const validate = require('./middlewares/validations');
+const auth = require('./middlewares/auth');
 
 exports.init = app => {
   app.get('/users', [auth.authenticate, validate.pagination], usersController.getUsers);
@@ -14,4 +16,6 @@ exports.init = app => {
     usersController.createAdmin
   );
   app.get('/albums', [auth.authenticate], albumsController.getAll);
+
+  app.use('/graphql', [], graphQL.init);
 };
